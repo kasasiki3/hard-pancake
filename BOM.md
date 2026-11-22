@@ -12,6 +12,7 @@
 | MCU | メインマイコン | STM32G431KBU6 | UFQFPN-32 | 1 | 候補 | 未確認 | STM32G431K8U6（Flash 64KB） | OPAMP×3入力とTIM1 6chのピン両立を要確認 |
 | パワー | ハーフブリッジFET（40V案） | onsemi NTMFS5C430NLT1G（40V 1.4mΩ、Qg 82nC） | SO-8FL（DFN5x6） | 6 | 検証中 | Extended / 159,603個 / $0.574（C194661、2026-11-22） | NTMFS5C410NT1G（0.92mΩ、$0.887、9,289個）、HYG015N04LS1C2（2.4mΩ、$0.602、10,977個） | 耐圧40V/60Vは未決（readme参照）。60V案と同じフットプリントなので後から差し替え可 |
 | パワー | ハーフブリッジFET（60V案） | onsemi NTMFS5C612NLT1G（60V 2.3mΩ、Qg 91nC） | SO-8FL（DFN5x6） | 6 | 検証中 | Extended / 39,025個 / $0.913（C348543、2026-11-22） | BSC014N06NS（1.45mΩ、$1.414、29,817個）、CJAC13TH06（2.2mΩ、$0.784、13,936個） | Rds(on)はLCSCの属性値。条件（Vgs・温度）はデータシートで要確認 |
+| パワー | ハーフブリッジFET（60V・実績案） | onsemi NTMFS5C628NLT1G（60V 3.3mΩ、Qg 52nC） | SO-8FL（DFN5x6） | 6 | 検証中 | Extended / 6,172個 / $0.791（C145537、2026-11-22） | 上の2案（同フットプリント） | ODrive v3.4 48V版で採用（ODriveHardware BOM_v3.4_48V.csv）。平均5A程度なら損失は問題にならない |
 | ドライバ | 3相ゲートドライバ | FD6288Q | QFN-24 | 1 | 候補 | 未確認 | EG2133、TI DRV8323RS（電流アンプ・保護内蔵、高価） | 内蔵OPAMP前提なら安価なプリドライバで足りる |
 | 電流検出 | 相シャント | 0.5mΩ 2512 / 3W級 | 2512 | 3 | 候補 | 未確認 | 1mΩ（感度↑・損失↑） | 0.5mΩ×56A(40A RMSのピーク)=28mV。PGAゲインで調整 |
 | 通信 | CAN-FDトランシーバ | TI TCAN1044V（VIO付き） | VSON-8 / SOIC-8 | 1 | 候補 | 未確認 | NXP TJA1051T/3、Microchip MCP2562FD、国産互換品 | 3.3V VIO品を選ぶ |
