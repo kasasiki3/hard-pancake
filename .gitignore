@@ -1,0 +1,8 @@
+kicad/erc.rpt
+kicad/*.net
+kicad/*.pdf
+kicad/*-backups/
+kicad/*.kicad_prl
+kicad/fp-info-cache
+kicad/~*.lck
+tools/__pycache__/

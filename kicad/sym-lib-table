@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "pancake")(type "KiCad")(uri "${KIPRJMOD}/pancake.kicad_sym")(options "")(descr "固いパンケーキ用"))
+)

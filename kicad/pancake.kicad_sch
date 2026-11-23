@@ -1,0 +1,185 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "c78f4652-471e-4e9e-a2ac-721cd107761e")
+	(paper "A4")
+	(title_block
+		(title "固いパンケーキ モータードライバ")
+		(comment 1 "tools/gen_sch.py で生成。配置は自動のため KiCad で整える")
+	)
+	(lib_symbols)
+	(sheet
+		(at 30 40)
+		(size 40 20)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "cd814c1d-fc98-48cf-a83b-0b5f11f01399")
+		(property "Sheetname" "電源"
+			(at 30 39.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 30 60.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "pancake"
+				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 90 40)
+		(size 40 20)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "b260df13-adf6-4a93-8cd2-2d6f4349b207")
+		(property "Sheetname" "パワー段"
+			(at 90 39.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "bridge.kicad_sch"
+			(at 90 60.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "pancake"
+				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 150 40)
+		(size 40 20)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "44d4375c-eb23-40c7-9407-b3fa1b1324ee")
+		(property "Sheetname" "MCU"
+			(at 150 39.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "mcu.kicad_sch"
+			(at 150 60.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "pancake"
+				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 210 40)
+		(size 40 20)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "98dc1670-6f54-44e6-aba4-c45bac2c5523")
+		(property "Sheetname" "CAN・エンコーダ"
+			(at 210 39.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "comm.kicad_sch"
+			(at 210 60.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "pancake"
+				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)
