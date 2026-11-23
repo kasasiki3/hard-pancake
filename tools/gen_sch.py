@@ -61,6 +61,13 @@ def libsym(lib_id):
         sub = list(sub)
         sub[1] = name + sub[1][len(base[1]):]
         out.append(sub)
+    if lib_id == "Interface_USB:CH340C":
+        # V3 is tied to VCC in 3.3V mode (datasheet); mark it power input so ERC
+        # does not see two power outputs on +3V3.
+        for sub in find(out, "symbol"):
+            for p in find(sub, "pin"):
+                if first(p, "number")[1] == "4":
+                    p[1] = Sym("power_in")
     return out
 
 
@@ -197,13 +204,13 @@ def block(name):
 
 
 def comp(page, prefix, lib_id, value, nets, at, rot=0, fp=None, mpn=None, in_bom=True,
-         txt=None):
+         txt=None, mirror=False):
     """at: (x, y) mm. y may be a net name: align with that net's pin already placed."""
     _counts[prefix] = _counts.get(prefix, 0) + 1
     ref = "%s%d" % (prefix, _counts[prefix])
     PAGES.setdefault(page, []).append(dict(ref=ref, lib=lib_id, value=value, nets=nets,
                                            fp=FP.get(fp, fp), mpn=mpn, in_bom=in_bom,
-                                           rot=rot, at=at, txt=txt,
+                                           rot=rot, at=at, txt=txt, mirror=mirror,
                                            block=CUR_BLOCK[0]))
     return ref
 
@@ -265,15 +272,50 @@ flag(P, "+5V", (245, 125))
 
 block("3.3V LDO (RT9013)")
 comp(P, "U", "pancake:RT9013-33", "RT9013-33GB",
-     {"1": "+5V", "3": "+5V", "2": "GND", "5": "+3V3", "4": NC}, (160, 210), fp="SOT23-5")
-C(P, "1uF 25V", "+5V", "GND", (135, 213), fp="C0603")
-C(P, "1uF 25V", "+3V3", "GND", (185, 213), fp="C0603")
+     {"1": "VIN_LDO", "3": "VIN_LDO", "2": "GND", "5": "+3V3", "4": NC}, (190, 222),
+     fp="SOT23-5")
+C(P, "1uF 25V", "VIN_LDO", "GND", (165, 227), fp="C0603")
+comp(P, "#FLG", "power:PWR_FLAG", "PWR_FLAG", {"1": "VIN_LDO"}, (180, 212), in_bom=False)
+# 5V(降圧) と USBの5V をダイオードORしてLDOへ。USBだけでMCU・エンコーダ・CH340が動く
+comp(P, "D", "Diode:BAT54C", "BAT54C", {"1": "+5V", "2": "VBUS_USB", "3": "VIN_LDO"},
+     (163, 205), 0, "SOT23", txt="above")
+C(P, "1uF 25V", "+3V3", "GND", (215, 227), fp="C0603")
 
 block("VBUS電圧検出 (約62Vフルスケール)")
 R(P, "100k", "VBUS", "VBUS_SENSE", (260, 63))
 R(P, "5.6k", "VBUS_SENSE", "GND", (260, 82))
 C(P, "10nF", "VBUS_SENSE", "GND", (272, 82))
 port(P, "VBUS_SENSE", (290, 73.66), "R", "output")
+
+block("USB Type-C (デバッグ用シリアル・書き込み・給電)")
+comp(P, "J", "Connector:USB_C_Receptacle_USB2.0_16P", "USB-C",
+     {"A4": "VBUS_USB", "A9": "VBUS_USB", "B4": "VBUS_USB", "B9": "VBUS_USB",
+      "A5": "CC1", "B5": "CC2", "A6": "USB_DP", "B6": "USB_DP", "A7": "USB_DM", "B7": "USB_DM",
+      "A8": NC, "B8": NC, "A1": "GND", "A12": "GND", "B1": "GND", "B12": "GND", "SH": "GND"},
+     (285, 150), 0, None, "TYPE-C-31-M-12", txt="above")
+R(P, "5.1k", "CC1", "GND", (312, "CC1"), 90)
+R(P, "5.1k", "CC2", "GND", (328, "CC2"), 90)
+comp(P, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
+     {"5": "VBUS_USB", "2": "GND", "1": "USB_DM", "3": "USB_DP", "4": NC, "6": NC},
+     (318, 192), 270, None, "TPUSBLC6-4SC6", txt="below")
+comp(P, "U", "Interface_USB:CH340C", "CH340C", {"1": "GND", "2": "UART_RX", "3": "UART_TX",
+                                                 "4": "+3V3", "16": "+3V3", "5": "USB_DP",
+                                                 "6": "USB_DM", "13": "DTR_N", "14": "RTS_N",
+                                                 "7": NC, "8": NC, "9": NC, "10": NC,
+                                                 "11": NC, "12": NC, "15": NC},
+     (355, 160), 0, "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm", "CH340C")
+C(P, "100nF", "+3V3", "GND", (340, 128))
+port(P, "UART_RX", (380, "UART_RX"), "R", "output")
+port(P, "UART_TX", (380, "UART_TX"), "R", "input")
+block("自動書き込み (DTR→BOOT0, RTS→NRST)")
+comp(P, "D", "Diode:1N4148WS", "1N4148WS", {"1": "RTS_N", "2": "NRST"}, (372, 190), 0,
+     "Diode_SMD:D_SOD-323")
+port(P, "NRST", (388, 190.5), "R")
+R(P, "10k", "DTR_N", "PNP_B", (360, 215), 90)
+comp(P, "Q", "Transistor_BJT:MMBT3906", "MMBT3906", {"1": "PNP_B", "2": "+3V3", "3": "BOOT0"},
+     (373, 215), 0, "SOT23", txt="right", mirror=True)
+R(P, "10k", "BOOT0", "GND", (383, 233))
+port(P, "BOOT0", (395, 226.06), "R")
 
 # ======== パワー段シート
 B = "bridge"
@@ -319,8 +361,8 @@ port(B, "NTC_SENSE", (75, 208.28), "R", "output")
 # ======== 制御シート (MCU・CAN・エンコーダ)
 M = "ctrl"
 block("MCU")
-mcu = {"1": "+3V3", "2": "ENC1_Z", "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
-       "7": "NRST", "8": "VBUS_SENSE", "9": "ISENSE_A", "10": "LED2", "11": NC,
+mcu = {"1": "+3V3", "2": "ENC1_Z", "3": "LED2", "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
+       "7": "NRST", "8": "VBUS_SENSE", "9": "ISENSE_A", "10": "UART_TX", "11": "UART_RX",
        "12": "ENC2_B", "13": "ENC2_Z", "14": "ENC2_A", "15": "ISENSE_B", "16": "ISENSE_C",
        "17": NC, "18": NC, "19": "GND", "20": "+3V3", "21": "+3V3", "22": "LED1", "23": "GND",
        "24": "+3V3", "25": "NTC_SENSE", "26": NC, "27": "PWM_AL", "28": "PWM_BL",
@@ -329,10 +371,13 @@ mcu = {"1": "+3V3", "2": "ENC1_Z", "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OU
        "40": "ENC1_B", "41": "ENC1_A", "42": NC, "43": "ENC1_A", "44": "ENC1_B",
        "45": "BOOT0", "46": NC, "47": "GND", "48": "+3V3"}
 comp(M, "U", "MCU_ST_STM32G4:STM32G431CBTx", "STM32G431CBT6", mcu, (210, 140))
-for net in ("ISENSE_C", "NTC_SENSE", "PWM_AL", "PWM_BL", "PWM_CL"):
-    port(M, net, (180, None), "L", "input" if net.startswith(("ISENSE", "NTC")) else "output")
-for net in ("VBUS_SENSE", "ISENSE_A", "ISENSE_B", "PWM_AH", "PWM_BH", "PWM_CH"):
-    port(M, net, (242, None), "R", "input" if net.startswith(("ISENSE", "VBUS")) else "output")
+for net in ("ISENSE_C", "NTC_SENSE", "PWM_AL", "PWM_BL", "PWM_CL", "BOOT0"):
+    port(M, net, (180, None), "L", "input" if net.startswith(("ISENSE", "NTC")) else
+         "passive" if net == "BOOT0" else "output")
+for net in ("VBUS_SENSE", "ISENSE_A", "ISENSE_B", "PWM_AH", "PWM_BH", "PWM_CH", "UART_TX",
+            "UART_RX"):
+    port(M, net, (242, None), "R",
+         "input" if net.startswith(("ISENSE", "VBUS")) or net == "UART_RX" else "output")
 
 block("パスコン (VDD×3, VDDA, VREF+)")
 for i, (v, fp) in enumerate([("100nF", None), ("100nF", None), ("100nF", None),
@@ -347,8 +392,10 @@ comp(M, "Y", "Device:Crystal_GND24", "8MHz", {"1": "OSC_IN", "3": "OSC_OUT", "2"
 C(M, "15pF", "OSC_IN", "GND", (146, 108))
 C(M, "15pF", "OSC_OUT", "GND", (170, 108))
 
-block("BOOT0・LED1")
-R(M, "10k", "BOOT0", "GND", (183, "BOOT0"), 270, txt="below")
+block("LED")
+R(M, "1k", "LED2", "LED2_A", (182, "LED2"), 270, txt="below")
+comp(M, "D", "Device:LED", "LED", {"2": "LED2_A", "1": "GND"}, (170, "LED2"), 0, "LED0603",
+     txt="below")
 R(M, "1k", "LED1", "LED1_A", (168, "LED1"), 270)
 comp(M, "D", "Device:LED", "LED", {"2": "LED1_A", "1": "GND"}, (155, "LED1"), 0, "LED0603")
 
@@ -363,11 +410,6 @@ comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
 comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ1(未選定)",
      {"1": "+3V3", "2": "GND", "3": "ENC1_A_C", "4": "ENC1_B_C", "5": "ENC1_Z_C"},
      (40, 140), 180, txt="left")
-
-block("LED2")
-R(M, "1k", "LED2", "LED2_A", (252, "LED2"), 90, txt="below")
-comp(M, "D", "Device:LED", "LED", {"2": "LED2_A", "1": "GND"}, (264, "LED2"), 180, "LED0603",
-     txt="below")
 
 block("エンコーダ2 (ABZ)")
 e2 = ["ENC2_B", "ENC2_Z", "ENC2_A"]
@@ -385,6 +427,7 @@ comp(M, "J", "Connector_Generic:Conn_01x05", "SWD(未選定)",
      {"1": "SWDIO", "2": "SWCLK", "3": "NRST", "4": "GND", "5": "+3V3"}, (252, 162), 0,
      txt="right")
 C(M, "100nF", "NRST", "GND", (240, 182))
+port(M, "NRST", (228, 195.58), "L")
 
 block("CANトランシーバ (STBはGND固定=常時ノーマルモード)")
 comp(M, "U", "pancake:TCAN1044V", "TCAN1044VDRQ1",
@@ -406,7 +449,7 @@ for i in range(2):
                                             "4": NC, "5": NC, "6": NC, "8": NC},
          (397, 195 + 42 * i), 180, None, "R-RJ45R08P-A004", txt="above")
 
-SHEETS = [("power", "電源"), ("bridge", "パワー段"), ("ctrl", "制御 (MCU・CAN・エンコーダ)")]
+SHEETS = [("power", "電源・USB"), ("bridge", "パワー段"), ("ctrl", "制御 (MCU・CAN・エンコーダ)")]
 PAPER = {"power": ("A3", 420, 297), "bridge": ("A3", 420, 297), "ctrl": ("A3", 420, 297)}
 
 # ---------------------------------------------------------------- geometry helpers
@@ -696,6 +739,11 @@ class Sheet:
         assert not missing, (c["ref"], missing)
         rot = c["rot"]
         pins = place_pins(raw, rot)
+        if c["lib"] == "power:PWR_FLAG":         # wire attaches from below the flag
+            pins = [(n, nm, t, x, y, 90) for n, nm, t, x, y, a in pins]
+        if c["mirror"]:          # (mirror x): flip vertically; only used with rot 0
+            assert rot == 0
+            pins = [(n, nm, t, x, -y, (360 - a) % 360) for n, nm, t, x, y, a in pins]
         X = snap(c["at"][0])
         if isinstance(c["at"][1], str):
             Y = self.terms[c["at"][1]][0][0][1] * G
@@ -705,6 +753,8 @@ class Sheet:
 
         # body keep-out
         pts = [xform(px, py, rot) for px, py in graphics_pts(sym)]
+        if c["mirror"]:
+            pts = [(x, -y) for x, y in pts]
         pts += [(p[3], p[4]) for p in pins]
         bx1 = X + min(p[0] for p in pts) - 0.6
         bx2 = X + max(p[0] for p in pts) + 0.6
@@ -754,7 +804,10 @@ class Sheet:
                 pr[4].append([Sym("justify"), Sym(j)])
             return pr
 
-        s = [Sym("symbol"), [Sym("lib_id"), c["lib"]], [Sym("at"), X, Y, rot], [Sym("unit"), 1],
+        s = [Sym("symbol"), [Sym("lib_id"), c["lib"]], [Sym("at"), X, Y, rot]]
+        if c["mirror"]:
+            s.append([Sym("mirror"), Sym("x")])
+        s += [[Sym("unit"), 1],
              [Sym("exclude_from_sim"), Sym("no")],
              [Sym("in_bom"), Sym("yes" if c["in_bom"] else "no")],
              [Sym("on_board"), Sym("yes")], [Sym("dnp"), Sym("no")], [Sym("uuid"), uid()],
@@ -854,8 +907,8 @@ class Sheet:
         self.power(net, x, y, 0, 1 if net == "GND" else -1, blk)
 
     def add_port(self, net, x, y, side, shape):
-        if y is None:            # align with the first pin of the net
-            y = self.terms[net][0][0][1] * G
+        if y is None or isinstance(y, str):     # align with the first pin of that net
+            y = self.terms[y or net][0][0][1] * G
         x, y = snap(x), round(y / G) * G
         ang, just, d = (180, "right", (1, 0)) if side == "L" else (0, "left", (-1, 0))
         self.items.append([Sym("hierarchical_label"), net, [Sym("shape"), Sym(shape)],
