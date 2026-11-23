@@ -6,3 +6,4 @@ kicad/*.kicad_prl
 kicad/fp-info-cache
 kicad/~*.lck
 tools/__pycache__/
+kicad/.history/
