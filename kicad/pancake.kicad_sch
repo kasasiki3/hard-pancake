@@ -2,16 +2,16 @@
 	(version 20231120)
 	(generator "eeschema")
 	(generator_version "8.0")
-	(uuid "213edcdf-7f76-45e8-8a52-b4373653e411")
+	(uuid "19944b3e-8086-4f27-bc28-e92d69f31b59")
 	(paper "A4")
 	(title_block
 		(title "固いパンケーキ モータードライバ")
-		(comment 1 "tools/gen_sch.py で生成。配置は自動のため KiCad で整える")
+		(comment 1 "tools/gen_sch.py で生成")
 	)
 	(lib_symbols)
 	(sheet
-		(at 30 40)
-		(size 40 20)
+		(at 25.4 40.64)
+		(size 50.8 33.02)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -24,9 +24,9 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "4e9c6c94-b2bd-4506-9a4b-bd2e9d54de72")
+		(uuid "30dfdae2-19e1-437b-92f8-2b7cb123b3c3")
 		(property "Sheetname" "電源"
-			(at 30 39.3 0)
+			(at 25.4 39.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -35,7 +35,7 @@
 			)
 		)
 		(property "Sheetfile" "power.kicad_sch"
-			(at 30 60.6 0)
+			(at 25.4 74.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -43,17 +43,27 @@
 				(justify left top)
 			)
 		)
+		(pin "VBUS_SENSE" output
+			(at 76.2 45.72 0)
+			(uuid "33c460b7-8e22-46e1-af76-fe4347ef2734")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
 		(instances
 			(project "pancake"
-				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
+				(path "/19944b3e-8086-4f27-bc28-e92d69f31b59"
 					(page "2")
 				)
 			)
 		)
 	)
 	(sheet
-		(at 90 40)
-		(size 40 20)
+		(at 101.6 40.64)
+		(size 50.8 33.02)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -66,9 +76,161 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "cdd60c59-d959-48f3-8949-0ed56f6cf811")
+		(uuid "fe917297-830e-44fb-a20b-91881a62ade1")
+		(property "Sheetname" "制御 (MCU・CAN・エンコーダ)"
+			(at 101.6 39.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "ctrl.kicad_sch"
+			(at 101.6 74.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBUS_SENSE" input
+			(at 101.6 45.72 180)
+			(uuid "35d18783-85a2-4741-a1bc-b2cb9a88fd14")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PWM_AH" output
+			(at 152.4 45.72 0)
+			(uuid "77ca4b0c-58de-43bc-b68e-05f4990b2ef0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PWM_AL" output
+			(at 152.4 48.26 0)
+			(uuid "9ddc2075-9048-4ea6-833a-dfea2e9430c7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PWM_BH" output
+			(at 152.4 50.8 0)
+			(uuid "ad13f93c-b37b-4a30-8802-28be2536eb6c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PWM_BL" output
+			(at 152.4 53.34 0)
+			(uuid "b7c6ef6b-835f-40da-8036-c682b746cbea")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PWM_CH" output
+			(at 152.4 55.88 0)
+			(uuid "9a34b623-b328-4f13-80c1-38dc715c623e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PWM_CL" output
+			(at 152.4 58.42 0)
+			(uuid "831536ff-3c62-4d67-b92a-57d2c41821c4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ISENSE_A" input
+			(at 152.4 60.96 0)
+			(uuid "52544738-d5d5-4eba-b9cb-ee88717298b8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ISENSE_B" input
+			(at 152.4 63.5 0)
+			(uuid "2c3f200a-bd61-43a3-ab28-13708a8e5df0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "ISENSE_C" input
+			(at 152.4 66.04 0)
+			(uuid "b267b23b-e304-4287-a867-b0b5295ea100")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "NTC_SENSE" input
+			(at 152.4 68.58 0)
+			(uuid "5b2238d4-8e83-430a-b2aa-47a14def6bc6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "pancake"
+				(path "/19944b3e-8086-4f27-bc28-e92d69f31b59"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 177.8 40.64)
+		(size 50.8 33.02)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "617db41d-210e-4132-a1bd-484918885709")
 		(property "Sheetname" "パワー段"
-			(at 90 39.3 0)
+			(at 177.8 39.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -77,7 +239,7 @@
 			)
 		)
 		(property "Sheetfile" "bridge.kicad_sch"
-			(at 90 60.6 0)
+			(at 177.8 74.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -85,97 +247,234 @@
 				(justify left top)
 			)
 		)
-		(instances
-			(project "pancake"
-				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
-					(page "3")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 150 40)
-		(size 40 20)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0)
-		)
-		(uuid "0cf1f9fc-1061-40fd-a4bd-6914e3cc355b")
-		(property "Sheetname" "MCU"
-			(at 150 39.3 0)
+		(pin "PWM_AH" input
+			(at 177.8 45.72 180)
+			(uuid "1159769f-a084-4342-9a10-fac542d15f71")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left bottom)
+				(justify left)
 			)
 		)
-		(property "Sheetfile" "mcu.kicad_sch"
-			(at 150 60.6 0)
+		(pin "PWM_AL" input
+			(at 177.8 48.26 180)
+			(uuid "4bb15e72-b4cf-4ced-842f-acf1add27a6a")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left top)
+				(justify left)
+			)
+		)
+		(pin "PWM_BH" input
+			(at 177.8 50.8 180)
+			(uuid "42a577c9-893e-467f-8b8c-bb00fe1a594d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PWM_BL" input
+			(at 177.8 53.34 180)
+			(uuid "9b0e1a31-a0bd-4659-bd5a-c48c8955437a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PWM_CH" input
+			(at 177.8 55.88 180)
+			(uuid "7e8d3f08-deb1-439c-982a-49ffc119f067")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PWM_CL" input
+			(at 177.8 58.42 180)
+			(uuid "6cf929e5-0ae9-4a4c-a7af-89b036a5e357")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ISENSE_A" output
+			(at 177.8 60.96 180)
+			(uuid "7116b73e-7efb-404b-a336-a8c6054f80b1")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ISENSE_B" output
+			(at 177.8 63.5 180)
+			(uuid "e54429ec-79f5-4517-bfc6-e32b5f14b127")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "ISENSE_C" output
+			(at 177.8 66.04 180)
+			(uuid "07bca121-1069-4901-86d0-6e08eb834261")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "NTC_SENSE" output
+			(at 177.8 68.58 180)
+			(uuid "20f0f7f5-bcec-435b-a424-648467db44bc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 		(instances
 			(project "pancake"
-				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
+				(path "/19944b3e-8086-4f27-bc28-e92d69f31b59"
 					(page "4")
 				)
 			)
 		)
 	)
-	(sheet
-		(at 210 40)
-		(size 40 20)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
+	(wire
+		(pts
+			(xy 76.2 45.72)
+			(xy 101.6 45.72)
+		)
 		(stroke
-			(width 0.1524)
-			(type solid)
+			(width 0)
+			(type default)
 		)
-		(fill
-			(color 0 0 0 0)
+		(uuid "7f3f2306-920c-477d-aed8-5a3fc0504d71")
+	)
+	(wire
+		(pts
+			(xy 152.4 45.72)
+			(xy 177.8 45.72)
 		)
-		(uuid "ea74a3d8-d751-499e-9190-3a3cb97b7f62")
-		(property "Sheetname" "CAN・エンコーダ"
-			(at 210 39.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
+		(stroke
+			(width 0)
+			(type default)
 		)
-		(property "Sheetfile" "comm.kicad_sch"
-			(at 210 60.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
+		(uuid "2c73c067-921a-426a-b3ea-a780269ea175")
+	)
+	(wire
+		(pts
+			(xy 152.4 48.26)
+			(xy 177.8 48.26)
 		)
-		(instances
-			(project "pancake"
-				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
-					(page "5")
-				)
-			)
+		(stroke
+			(width 0)
+			(type default)
 		)
+		(uuid "db9c6587-6157-4d50-a49d-7db7b84f37a8")
+	)
+	(wire
+		(pts
+			(xy 152.4 50.8)
+			(xy 177.8 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "78f71536-d2a5-4501-9805-1b034682be38")
+	)
+	(wire
+		(pts
+			(xy 152.4 53.34)
+			(xy 177.8 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "58d23d43-bd77-47cb-bfd0-6e2105b6c050")
+	)
+	(wire
+		(pts
+			(xy 152.4 55.88)
+			(xy 177.8 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "144e8e91-40f2-4796-8995-69f452890dbd")
+	)
+	(wire
+		(pts
+			(xy 152.4 58.42)
+			(xy 177.8 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe5b710f-4491-4c16-b42b-62efef159933")
+	)
+	(wire
+		(pts
+			(xy 152.4 60.96)
+			(xy 177.8 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b15db0ef-9011-4a20-8d0f-73fdb0ff8806")
+	)
+	(wire
+		(pts
+			(xy 152.4 63.5)
+			(xy 177.8 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f554511-8b50-4a1a-ae27-52cabf41aa50")
+	)
+	(wire
+		(pts
+			(xy 152.4 66.04)
+			(xy 177.8 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "182ebe21-041b-4797-942f-0f8d40ad1a0d")
+	)
+	(wire
+		(pts
+			(xy 152.4 68.58)
+			(xy 177.8 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "93dec889-1b62-4097-8627-2a45d2ac1bee")
 	)
 	(sheet_instances
 		(path "/"
