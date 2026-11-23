@@ -427,6 +427,8 @@ comp(M, "J", "Connector_Generic:Conn_01x05", "SWD(未選定)",
      {"1": "SWDIO", "2": "SWCLK", "3": "NRST", "4": "GND", "5": "+3V3"}, (252, 162), 0,
      txt="right")
 C(M, "100nF", "NRST", "GND", (240, 182))
+comp(M, "SW", "Switch:SW_Push", "RESET", {"1": "NRST", "2": "GND"}, (230, 182), 270,
+     "Button_Switch_SMD:SW_SPST_TL3342", "TL3342")
 port(M, "NRST", (228, 195.58), "L")
 
 block("CANトランシーバ (STBはGND固定=常時ノーマルモード)")
