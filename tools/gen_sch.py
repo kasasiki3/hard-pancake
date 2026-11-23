@@ -319,14 +319,14 @@ port(B, "NTC_SENSE", (75, 208.28), "R", "output")
 # ======== 制御シート (MCU・CAN・エンコーダ)
 M = "ctrl"
 block("MCU")
-mcu = {"1": "+3V3", "2": "ENC1_Z", "3": "ENC1_CS", "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
+mcu = {"1": "+3V3", "2": "ENC1_Z", "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
        "7": "NRST", "8": "VBUS_SENSE", "9": "ISENSE_A", "10": "LED2", "11": NC,
        "12": "ENC2_B", "13": "ENC2_Z", "14": "ENC2_A", "15": "ISENSE_B", "16": "ISENSE_C",
        "17": NC, "18": NC, "19": "GND", "20": "+3V3", "21": "+3V3", "22": "LED1", "23": "GND",
        "24": "+3V3", "25": "NTC_SENSE", "26": NC, "27": "PWM_AL", "28": "PWM_BL",
        "29": "PWM_CL", "30": "PWM_AH", "31": "PWM_BH", "32": "PWM_CH", "33": "CAN_RX",
        "34": "CAN_TX", "35": "GND", "36": "+3V3", "37": "SWDIO", "38": "SWCLK", "39": NC,
-       "40": "ENC1_SCK", "41": "ENC1_MISO", "42": "ENC1_MOSI", "43": "ENC1_A", "44": "ENC1_B",
+       "40": "ENC1_B", "41": "ENC1_A", "42": NC, "43": "ENC1_A", "44": "ENC1_B",
        "45": "BOOT0", "46": NC, "47": "GND", "48": "+3V3"}
 comp(M, "U", "MCU_ST_STM32G4:STM32G431CBTx", "STM32G431CBT6", mcu, (210, 140))
 for net in ("ISENSE_C", "NTC_SENSE", "PWM_AL", "PWM_BL", "PWM_CL"):
@@ -352,19 +352,16 @@ R(M, "10k", "BOOT0", "GND", (183, "BOOT0"), 270, txt="below")
 R(M, "1k", "LED1", "LED1_A", (168, "LED1"), 270)
 comp(M, "D", "Device:LED", "LED", {"2": "LED1_A", "1": "GND"}, (155, "LED1"), 0, "LED0603")
 
-block("エンコーダ1 (ABZ+SPI)")
-e1 = ["ENC1_Z", "ENC1_CS", "ENC1_SCK", "ENC1_MISO", "ENC1_MOSI", "ENC1_A", "ENC1_B"]
-for i, s in enumerate(e1):
-    R(M, "100", s, s + "_C", (135, 121.92 + 5.08 * i), 270)
+block("エンコーダ1 (ABZ または SSI: A=DO, B=CLK, Z=CSN)")
+# A/B は TIM4(PB6/PB7) と SPI3(PB4 MISO / PB3 SCK) の両方へ配線し、ファームでどちらかを使う
+e1 = ["ENC1_Z", "ENC1_B", "ENC1_A"]
+for i, s_ in enumerate(e1):
+    R(M, "100", s_, s_ + "_C", (135, 127 + 7.62 * i), 270)
 comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
-     {"5": "+3V3", "2": "GND", "1": "ENC1_Z_C", "3": "ENC1_CS_C", "4": "ENC1_SCK_C",
-      "6": "ENC1_MISO_C"}, (95, 105), 90, None, "TPUSBLC6-4SC6", txt="right")
-comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
-     {"5": "+3V3", "2": "GND", "1": "ENC1_MOSI_C", "3": "ENC1_A_C", "4": "ENC1_B_C", "6": NC},
-     (95, 172), 270, None, "TPUSBLC6-4SC6", txt="below")
-comp(M, "J", "Connector_Generic:Conn_01x09", "エンコーダ1(未選定)",
-     {"9": "ENC1_Z_C", "8": "ENC1_CS_C", "7": "ENC1_SCK_C", "6": "ENC1_MISO_C",
-      "5": "ENC1_MOSI_C", "4": "ENC1_A_C", "3": "ENC1_B_C", "2": "GND", "1": "+3V3"},
+     {"5": "+3V3", "2": "GND", "1": "ENC1_A_C", "3": "ENC1_B_C", "4": "ENC1_Z_C", "6": NC},
+     (95, 112), 90, None, "TPUSBLC6-4SC6", txt="right")
+comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ1(未選定)",
+     {"1": "+3V3", "2": "GND", "3": "ENC1_A_C", "4": "ENC1_B_C", "5": "ENC1_Z_C"},
      (40, 140), 180, txt="left")
 
 block("LED2")
@@ -380,7 +377,7 @@ comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
      {"5": "+3V3", "2": "GND", "1": "ENC2_B_C", "3": "ENC2_Z_C", "4": "ENC2_A_C", "6": NC},
      (335, 97), 90, None, "TPUSBLC6-4SC6", txt="right")
 comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ2(未選定)",
-     {"1": "ENC2_B_C", "2": "ENC2_Z_C", "3": "ENC2_A_C", "4": "GND", "5": "+3V3"},
+     {"1": "+3V3", "2": "GND", "3": "ENC2_A_C", "4": "ENC2_B_C", "5": "ENC2_Z_C"},
      (380, 119.38), 0, txt="right")
 
 block("SWD")

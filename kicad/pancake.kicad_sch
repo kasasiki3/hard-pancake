@@ -2,7 +2,7 @@
 	(version 20231120)
 	(generator "eeschema")
 	(generator_version "8.0")
-	(uuid "19944b3e-8086-4f27-bc28-e92d69f31b59")
+	(uuid "6e086cd7-442d-4794-ac17-ea4c43b60fdf")
 	(paper "A4")
 	(title_block
 		(title "固いパンケーキ モータードライバ")
@@ -24,7 +24,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "30dfdae2-19e1-437b-92f8-2b7cb123b3c3")
+		(uuid "91e161ca-d2a5-48f7-8712-c56573ba129f")
 		(property "Sheetname" "電源"
 			(at 25.4 39.94 0)
 			(effects
@@ -45,7 +45,7 @@
 		)
 		(pin "VBUS_SENSE" output
 			(at 76.2 45.72 0)
-			(uuid "33c460b7-8e22-46e1-af76-fe4347ef2734")
+			(uuid "ec1d141b-5864-4f46-ad2b-45a6ec9225be")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -55,7 +55,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/19944b3e-8086-4f27-bc28-e92d69f31b59"
+				(path "/6e086cd7-442d-4794-ac17-ea4c43b60fdf"
 					(page "2")
 				)
 			)
@@ -76,7 +76,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "fe917297-830e-44fb-a20b-91881a62ade1")
+		(uuid "470da256-5cc0-496a-a632-add4da33a73e")
 		(property "Sheetname" "制御 (MCU・CAN・エンコーダ)"
 			(at 101.6 39.94 0)
 			(effects
@@ -97,7 +97,7 @@
 		)
 		(pin "VBUS_SENSE" input
 			(at 101.6 45.72 180)
-			(uuid "35d18783-85a2-4741-a1bc-b2cb9a88fd14")
+			(uuid "db5c8845-125e-4dde-95a4-4e957a3421a9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -107,7 +107,7 @@
 		)
 		(pin "PWM_AH" output
 			(at 152.4 45.72 0)
-			(uuid "77ca4b0c-58de-43bc-b68e-05f4990b2ef0")
+			(uuid "be134489-9fd2-4984-a4af-64c7638f68ef")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -117,7 +117,7 @@
 		)
 		(pin "PWM_AL" output
 			(at 152.4 48.26 0)
-			(uuid "9ddc2075-9048-4ea6-833a-dfea2e9430c7")
+			(uuid "0efc2213-c339-4735-82a4-d2a1e98a01b9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -127,7 +127,7 @@
 		)
 		(pin "PWM_BH" output
 			(at 152.4 50.8 0)
-			(uuid "ad13f93c-b37b-4a30-8802-28be2536eb6c")
+			(uuid "d463f523-0168-4a4d-b147-f81a01e17832")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -137,7 +137,7 @@
 		)
 		(pin "PWM_BL" output
 			(at 152.4 53.34 0)
-			(uuid "b7c6ef6b-835f-40da-8036-c682b746cbea")
+			(uuid "11b3aeae-723f-4ef1-9c75-288a41e51090")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -147,7 +147,7 @@
 		)
 		(pin "PWM_CH" output
 			(at 152.4 55.88 0)
-			(uuid "9a34b623-b328-4f13-80c1-38dc715c623e")
+			(uuid "6d474a2a-a0d9-4f1e-9eee-1b75ac77f1a9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -157,7 +157,7 @@
 		)
 		(pin "PWM_CL" output
 			(at 152.4 58.42 0)
-			(uuid "831536ff-3c62-4d67-b92a-57d2c41821c4")
+			(uuid "9f72623f-bbf7-4bfa-9bb8-75c153918651")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -167,7 +167,7 @@
 		)
 		(pin "ISENSE_A" input
 			(at 152.4 60.96 0)
-			(uuid "52544738-d5d5-4eba-b9cb-ee88717298b8")
+			(uuid "0e624fe7-3337-415b-b8c8-dc1a75a918ba")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -177,7 +177,7 @@
 		)
 		(pin "ISENSE_B" input
 			(at 152.4 63.5 0)
-			(uuid "2c3f200a-bd61-43a3-ab28-13708a8e5df0")
+			(uuid "3e9ebb47-4bc4-47fb-80e2-2c7865ecc0f1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -187,7 +187,7 @@
 		)
 		(pin "ISENSE_C" input
 			(at 152.4 66.04 0)
-			(uuid "b267b23b-e304-4287-a867-b0b5295ea100")
+			(uuid "57eced90-9c8d-45d0-9603-890a6e6f0864")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -197,7 +197,7 @@
 		)
 		(pin "NTC_SENSE" input
 			(at 152.4 68.58 0)
-			(uuid "5b2238d4-8e83-430a-b2aa-47a14def6bc6")
+			(uuid "5019b97b-93e0-4110-97c6-dc95b16f8ab6")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -207,7 +207,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/19944b3e-8086-4f27-bc28-e92d69f31b59"
+				(path "/6e086cd7-442d-4794-ac17-ea4c43b60fdf"
 					(page "3")
 				)
 			)
@@ -228,7 +228,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "617db41d-210e-4132-a1bd-484918885709")
+		(uuid "c1e6239b-9e25-450b-975a-e333b1e0033b")
 		(property "Sheetname" "パワー段"
 			(at 177.8 39.94 0)
 			(effects
@@ -249,7 +249,7 @@
 		)
 		(pin "PWM_AH" input
 			(at 177.8 45.72 180)
-			(uuid "1159769f-a084-4342-9a10-fac542d15f71")
+			(uuid "971e8d9d-75a8-4ed1-9d3c-034f4bff7530")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -259,7 +259,7 @@
 		)
 		(pin "PWM_AL" input
 			(at 177.8 48.26 180)
-			(uuid "4bb15e72-b4cf-4ced-842f-acf1add27a6a")
+			(uuid "3529d71d-1855-4a0b-b53d-04f365c570d1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -269,7 +269,7 @@
 		)
 		(pin "PWM_BH" input
 			(at 177.8 50.8 180)
-			(uuid "42a577c9-893e-467f-8b8c-bb00fe1a594d")
+			(uuid "0750b9ee-2588-4910-b525-7d73c56d3b40")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -279,7 +279,7 @@
 		)
 		(pin "PWM_BL" input
 			(at 177.8 53.34 180)
-			(uuid "9b0e1a31-a0bd-4659-bd5a-c48c8955437a")
+			(uuid "fd222c04-213a-448e-886c-6ce041daae5d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -289,7 +289,7 @@
 		)
 		(pin "PWM_CH" input
 			(at 177.8 55.88 180)
-			(uuid "7e8d3f08-deb1-439c-982a-49ffc119f067")
+			(uuid "bf98e322-4db7-42d5-a13c-f28c0c0647f5")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -299,7 +299,7 @@
 		)
 		(pin "PWM_CL" input
 			(at 177.8 58.42 180)
-			(uuid "6cf929e5-0ae9-4a4c-a7af-89b036a5e357")
+			(uuid "8fdfec00-9070-41e8-a8c5-cbc87e4f29fd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -309,7 +309,7 @@
 		)
 		(pin "ISENSE_A" output
 			(at 177.8 60.96 180)
-			(uuid "7116b73e-7efb-404b-a336-a8c6054f80b1")
+			(uuid "151aad0d-6be1-4a64-9514-768384f300ca")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -319,7 +319,7 @@
 		)
 		(pin "ISENSE_B" output
 			(at 177.8 63.5 180)
-			(uuid "e54429ec-79f5-4517-bfc6-e32b5f14b127")
+			(uuid "0592eeb0-a943-4dce-bb99-66eb8b8aed92")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -329,7 +329,7 @@
 		)
 		(pin "ISENSE_C" output
 			(at 177.8 66.04 180)
-			(uuid "07bca121-1069-4901-86d0-6e08eb834261")
+			(uuid "48d9e2ad-8656-4248-a8ca-bd3c23de30e7")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -339,7 +339,7 @@
 		)
 		(pin "NTC_SENSE" output
 			(at 177.8 68.58 180)
-			(uuid "20f0f7f5-bcec-435b-a424-648467db44bc")
+			(uuid "51808ba7-f9d4-47ea-9103-c6697656a16a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -349,7 +349,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/19944b3e-8086-4f27-bc28-e92d69f31b59"
+				(path "/6e086cd7-442d-4794-ac17-ea4c43b60fdf"
 					(page "4")
 				)
 			)
@@ -364,7 +364,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "7f3f2306-920c-477d-aed8-5a3fc0504d71")
+		(uuid "562d054c-9580-472a-8e0a-b33729c1b2eb")
 	)
 	(wire
 		(pts
@@ -375,7 +375,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "2c73c067-921a-426a-b3ea-a780269ea175")
+		(uuid "7681b147-89e0-4cfc-9839-9174a2f904c7")
 	)
 	(wire
 		(pts
@@ -386,7 +386,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "db9c6587-6157-4d50-a49d-7db7b84f37a8")
+		(uuid "8c5bff3d-1717-429b-9f25-b2f1076104a6")
 	)
 	(wire
 		(pts
@@ -397,7 +397,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "78f71536-d2a5-4501-9805-1b034682be38")
+		(uuid "63c66792-5aec-4763-ac60-2c7edc1e9526")
 	)
 	(wire
 		(pts
@@ -408,7 +408,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "58d23d43-bd77-47cb-bfd0-6e2105b6c050")
+		(uuid "bcf64615-3b08-47d6-85f1-73c10ac62a4f")
 	)
 	(wire
 		(pts
@@ -419,7 +419,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "144e8e91-40f2-4796-8995-69f452890dbd")
+		(uuid "22d1495a-d6b6-454a-b4a9-5e470d218440")
 	)
 	(wire
 		(pts
@@ -430,7 +430,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "fe5b710f-4491-4c16-b42b-62efef159933")
+		(uuid "a1bec7d4-17f7-4cae-a512-c14c4368bcff")
 	)
 	(wire
 		(pts
@@ -441,7 +441,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "b15db0ef-9011-4a20-8d0f-73fdb0ff8806")
+		(uuid "ae88021f-fadd-4c01-8c89-7665aa62b713")
 	)
 	(wire
 		(pts
@@ -452,7 +452,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "7f554511-8b50-4a1a-ae27-52cabf41aa50")
+		(uuid "340295f4-b357-41ea-ae6c-2f7e91950da5")
 	)
 	(wire
 		(pts
@@ -463,7 +463,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "182ebe21-041b-4797-942f-0f8d40ad1a0d")
+		(uuid "5ae5d14c-12ee-4c5e-bbe3-0bf70c6dce45")
 	)
 	(wire
 		(pts
@@ -474,7 +474,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "93dec889-1b62-4097-8627-2a45d2ac1bee")
+		(uuid "d85e966c-5778-4983-91a3-29753c5bc7ae")
 	)
 	(sheet_instances
 		(path "/"
