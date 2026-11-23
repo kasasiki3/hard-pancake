@@ -2,7 +2,7 @@
 	(version 20231120)
 	(generator "eeschema")
 	(generator_version "8.0")
-	(uuid "c78f4652-471e-4e9e-a2ac-721cd107761e")
+	(uuid "213edcdf-7f76-45e8-8a52-b4373653e411")
 	(paper "A4")
 	(title_block
 		(title "固いパンケーキ モータードライバ")
@@ -24,7 +24,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "cd814c1d-fc98-48cf-a83b-0b5f11f01399")
+		(uuid "4e9c6c94-b2bd-4506-9a4b-bd2e9d54de72")
 		(property "Sheetname" "電源"
 			(at 30 39.3 0)
 			(effects
@@ -45,7 +45,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
 					(page "2")
 				)
 			)
@@ -66,7 +66,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "b260df13-adf6-4a93-8cd2-2d6f4349b207")
+		(uuid "cdd60c59-d959-48f3-8949-0ed56f6cf811")
 		(property "Sheetname" "パワー段"
 			(at 90 39.3 0)
 			(effects
@@ -87,7 +87,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
 					(page "3")
 				)
 			)
@@ -108,7 +108,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "44d4375c-eb23-40c7-9407-b3fa1b1324ee")
+		(uuid "0cf1f9fc-1061-40fd-a4bd-6914e3cc355b")
 		(property "Sheetname" "MCU"
 			(at 150 39.3 0)
 			(effects
@@ -129,7 +129,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
 					(page "4")
 				)
 			)
@@ -150,7 +150,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "98dc1670-6f54-44e6-aba4-c45bac2c5523")
+		(uuid "ea74a3d8-d751-499e-9190-3a3cb97b7f62")
 		(property "Sheetname" "CAN・エンコーダ"
 			(at 210 39.3 0)
 			(effects
@@ -171,7 +171,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/c78f4652-471e-4e9e-a2ac-721cd107761e"
+				(path "/213edcdf-7f76-45e8-8a52-b4373653e411"
 					(page "5")
 				)
 			)

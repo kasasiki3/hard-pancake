@@ -163,20 +163,33 @@ PAGES = {}   # page -> list of comps
 _counts = {}
 
 
-def comp(page, prefix, lib_id, value, nets, fp=None, mpn=None, in_bom=True):
+CUR_BLOCK = ["?"]
+
+
+def block(name):
+    CUR_BLOCK[0] = name
+
+
+def comp(page, prefix, lib_id, value, nets, fp=None, mpn=None, in_bom=True, rot=0):
     _counts[prefix] = _counts.get(prefix, 0) + 1
     ref = "%s%d" % (prefix, _counts[prefix])
     PAGES.setdefault(page, []).append(dict(ref=ref, lib=lib_id, value=value, nets=nets,
-                                           fp=FP.get(fp, fp), mpn=mpn, in_bom=in_bom))
+                                           fp=FP.get(fp, fp), mpn=mpn, in_bom=in_bom,
+                                           rot=rot, block=CUR_BLOCK[0]))
     return ref
 
 
+def _rot2(a, b):
+    """Series parts (both ends signal) lie horizontal; shunts to a rail stand vertical."""
+    return 90 if a not in POWER_NETS and b not in POWER_NETS else 0
+
+
 def R(page, value, a, b, fp="R0402"):
-    return comp(page, "R", "Device:R", value, {"1": a, "2": b}, fp)
+    return comp(page, "R", "Device:R", value, {"1": a, "2": b}, fp, rot=_rot2(a, b))
 
 
 def C(page, value, a, b, fp="C0402"):
-    return comp(page, "C", "Device:C", value, {"1": a, "2": b}, fp)
+    return comp(page, "C", "Device:C", value, {"1": a, "2": b}, fp, rot=_rot2(a, b))
 
 
 def flag(page, net):
@@ -185,6 +198,7 @@ def flag(page, net):
 
 # ---- 電源
 P = "power"
+block("電源入力・保護")
 comp(P, "J", "Connector_Generic:Conn_01x02", "電源入力(未選定)", {"1": "VBUS", "2": "GND"})
 flag(P, "VBUS")
 flag(P, "GND")
@@ -193,7 +207,7 @@ comp(P, "D", "Device:D_TVS", "SMBJ30A", {"1": "VBUS", "2": "GND"}, "SMB")
 for _ in range(2):
     comp(P, "C", "Device:C_Polarized", "220uF 50V", {"1": "VBUS", "2": "GND"}, "CP10",
          "JVJ50V220M10x10")
-# 12V (ゲート駆動)
+block("12V ゲート駆動電源 (TPS7A4101)")
 comp(P, "U", "Regulator_Linear:TPS7A4101DGN", "TPS7A4101DGNR",
      {"8": "VBUS", "5": "VBUS", "1": "+12V", "2": "FB_12V", "4": "GND", "9": "GND",
       "3": NC, "6": NC, "7": NC})
@@ -202,7 +216,7 @@ R(P, "10k", "FB_12V", "GND")
 C(P, "10nF", "+12V", "FB_12V")
 C(P, "1uF 100V", "VBUS", "GND", "C0805")
 C(P, "10uF 25V", "+12V", "GND", "C0805")
-# 5V (CAN)
+block("5V 降圧 (LMR51625)")
 comp(P, "U", "pancake:LMR51625", "LMR51625YDDCR",
      {"3": "VBUS", "2": "VBUS", "4": "GND", "6": "CB_5V", "5": "SW_5V", "1": "FB_5V"}, "SOT23-6")
 C(P, "100nF 50V", "CB_5V", "SW_5V")
@@ -213,12 +227,12 @@ C(P, "2.2uF 100V", "VBUS", "GND", "C1210")
 C(P, "2.2uF 100V", "VBUS", "GND", "C1210")
 C(P, "100nF 100V", "VBUS", "GND", "C0603")
 C(P, "22uF 16V", "+5V", "GND", "C1206")
-# 3.3V (MCU・エンコーダ)
+block("3.3V LDO (RT9013)")
 comp(P, "U", "pancake:RT9013-33", "RT9013-33GB",
      {"1": "+5V", "3": "+5V", "2": "GND", "5": "+3V3", "4": NC}, "SOT23-5")
 C(P, "1uF 25V", "+5V", "GND", "C0603")
 C(P, "1uF 25V", "+3V3", "GND", "C0603")
-# VBUS・温度検出
+block("電圧・温度検出")
 R(P, "100k", "VBUS", "VBUS_SENSE")
 R(P, "5.6k", "VBUS_SENSE", "GND")
 C(P, "10nF", "VBUS_SENSE", "GND")
@@ -228,6 +242,7 @@ comp(P, "TH", "Device:Thermistor_NTC", "10k NTC", {"1": "NTC_SENSE", "2": "GND"}
 
 # ---- パワー段
 B = "bridge"
+block("ゲートドライバ (DRV8300)")
 drv = {"22": "PWM_AH", "1": "PWM_AL", "23": "PWM_BH", "2": "PWM_BL", "24": "PWM_CH",
        "3": "PWM_CL", "4": "+12V", "5": NC, "21": NC, "7": NC, "8": NC, "6": "GND",
        "25": "GND"}
@@ -238,6 +253,7 @@ comp(B, "U", "pancake:DRV8300D_RGE", "DRV8300DRGER", drv)
 C(B, "10uF 25V", "+12V", "GND", "C0805")
 C(B, "100nF 50V", "+12V", "GND")
 for ph in "ABC":
+    block("%s相 ハーフブリッジ" % ph)
     C(B, "1uF 25V", "BST_" + ph, "PHASE_" + ph, "C0603")
     R(B, "3.3", "GH_" + ph, "GATE_%sH" % ph, "R0603")
     R(B, "3.3", "GL_" + ph, "GATE_%sL" % ph, "R0603")
@@ -255,6 +271,7 @@ for ph in "ABC":
 
 # ---- MCU
 M = "mcu"
+block("MCU")
 mcu = {"1": "+3V3", "2": "ENC1_Z", "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
        "7": "NRST", "8": "VBUS_SENSE", "9": "ISENSE_A", "10": NC, "11": NC, "12": "ENC2_B",
        "13": "LED2", "14": "ENC2_A", "15": "ISENSE_B", "16": "ISENSE_C", "17": NC, "18": NC,
@@ -265,21 +282,25 @@ mcu = {"1": "+3V3", "2": "ENC1_Z", "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OU
        "40": "ENC1_SCK", "41": "ENC1_MISO", "42": "ENC1_MOSI", "43": "ENC1_A", "44": "ENC1_B",
        "45": "BOOT0", "46": "LED1", "47": "GND", "48": "+3V3"}
 comp(M, "U", "MCU_ST_STM32G4:STM32G431CBTx", "STM32G431CBT6", mcu)
+block("クロック・リセット・BOOT0")
 comp(M, "Y", "Device:Crystal_GND24", "8MHz", {"1": "OSC_IN", "3": "OSC_OUT", "2": "GND",
                                               "4": "GND"}, "XTAL3225", "TX32258M4FBDD2T")
 C(M, "15pF", "OSC_IN", "GND")
 C(M, "15pF", "OSC_OUT", "GND")
 C(M, "100nF", "NRST", "GND")
 R(M, "10k", "BOOT0", "GND")
+block("パスコン (VDD×3, VDDA, VREF+)")
 for _ in range(3):
     C(M, "100nF", "+3V3", "GND")          # VDD x3
 C(M, "4.7uF 10V", "+3V3", "GND", "C0603")
 C(M, "100nF", "+3V3", "GND")              # VDDA
 C(M, "1uF 25V", "+3V3", "GND", "C0603")   # VDDA
 C(M, "100nF", "+3V3", "GND")              # VREF+
+block("電流検出オフセット")
 for ph in "ABC":                          # 電流検出オフセット
     R(M, "1k", "SHUNT_" + ph, "ISENSE_" + ph)
     R(M, "62k", "+3V3", "ISENSE_" + ph)
+block("LED・SWD")
 for n in ("1", "2"):
     R(M, "1k", "LED" + n, "LED%s_A" % n)
     comp(M, "D", "Device:LED", "LED", {"2": "LED%s_A" % n, "1": "GND"}, "LED0603")
@@ -288,11 +309,13 @@ comp(M, "J", "Connector_Generic:Conn_01x05", "SWD(未選定)",
 
 # ---- CAN・エンコーダ
 K = "comm"
+block("CANトランシーバ")
 comp(K, "U", "pancake:TCAN1044V", "TCAN1044VDRQ1",
      {"3": "+5V", "5": "+3V3", "1": "CAN_TX", "4": "CAN_RX", "8": "CAN_STB", "2": "GND",
       "7": "CANH", "6": "CANL"}, "SOIC8")
 C(K, "100nF", "+5V", "GND")
 C(K, "100nF", "+3V3", "GND")
+block("CAN保護・スプリット終端")
 comp(K, "D", "Power_Protection:NUP2105L", "ESDCAN24-2BLY",
      {"1": "CANH", "2": "CANL", "3": "GND"}, "SOT23")
 comp(K, "JP", "Jumper:SolderJumper_2_Open", "終端ON", {"1": "CANH", "2": "CANH_T"},
@@ -300,20 +323,24 @@ comp(K, "JP", "Jumper:SolderJumper_2_Open", "終端ON", {"1": "CANH", "2": "CANH
 R(K, "60.4", "CANH_T", "CAN_SPLIT")
 R(K, "60.4", "CAN_SPLIT", "CANL")
 C(K, "4.7nF", "CAN_SPLIT", "GND")
+block("CANコネクタ RJ45×2 (数珠つなぎ)")
 for _ in range(2):
     comp(K, "J", "Connector:RJ45", "RJ45", {"1": "CANH", "2": "CANL", "3": "GND", "7": "GND",
                                             "4": NC, "5": NC, "6": NC, "8": NC},
          None, "R-RJ45R08P-A004")
 enc = ["ENC1_A", "ENC1_B", "ENC1_Z", "ENC1_CS", "ENC1_SCK", "ENC1_MISO", "ENC1_MOSI",
        "ENC2_A", "ENC2_B", "ENC2_Z"]
+block("エンコーダ 直列抵抗")
 for s in enc:
     R(K, "100", s, s + "_C")
+block("エンコーダ ESD保護")
 groups = [enc[0:4], enc[4:8], enc[8:10] + [None, None]]
 for g in groups:
     nets = {"5": "+3V3", "2": "GND"}
     for pin, s in zip(("1", "3", "4", "6"), g):
         nets[pin] = s + "_C" if s else NC
     comp(K, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6", nets, None, "TPUSBLC6-4SC6")
+block("エンコーダコネクタ")
 comp(K, "J", "Connector_Generic:Conn_01x09", "エンコーダ1 ABZ+SPI(未選定)",
      {"1": "+3V3", "2": "GND", "3": "ENC1_A_C", "4": "ENC1_B_C", "5": "ENC1_Z_C",
       "6": "ENC1_CS_C", "7": "ENC1_SCK_C", "8": "ENC1_MISO_C", "9": "ENC1_MOSI_C"})
@@ -335,132 +362,267 @@ def outward(angle):
 
 
 def label_len(net):
-    return 2.0 + 1.0 * len(net)
+    return 3.0 + 1.05 * len(net)
+
+
+def place_pins(pins, rot):
+    """Pins transformed by symbol rotation: (num, name, type, sx, sy, angle) with sx,sy
+    offsets in schematic coordinates (y down)."""
+    r = math.radians(rot)
+    out = []
+    for num, name, typ, px, py, ang in pins:
+        rx = px * math.cos(r) - py * math.sin(r)
+        ry = px * math.sin(r) + py * math.cos(r)
+        out.append((num, name, typ, round(rx, 4), round(-ry, 4), (ang + rot) % 360))
+    return out
+
+
+def comp_bbox(c, pins):
+    xs = [p[3] for p in pins] + [0]
+    ys = [p[4] for p in pins] + [0]
+    minx, maxx, miny, maxy = min(xs) - 3, max(xs) + 3, min(ys) - 3, max(ys) + 3
+    for p in pins:
+        net = c["nets"].get(p[0])
+        if not net:
+            continue
+        dx, dy = outward(p[5])
+        ext = 2.54 + (6.5 if net in POWER_NETS else label_len(net))
+        minx = min(minx, p[3] + dx * ext - (1.5 if dx == 0 else 0))
+        maxx = max(maxx, p[3] + dx * ext + (1.5 if dx == 0 else 0))
+        miny = min(miny, p[4] + dy * ext)
+        maxy = max(maxy, p[4] + dy * ext)
+    # room for reference/value text
+    if len(pins) == 2 and all(abs(p[3]) < 0.01 for p in pins):       # vertical 2-pin
+        maxx = max(maxx, 12)
+    elif len(pins) == 2:                                               # horizontal 2-pin
+        miny = min(miny, -6)
+        maxy = max(maxy, 5)
+    else:
+        miny = min(miny, min(p[4] for p in pins) - 9)
+    return minx, miny, maxx, maxy
+
+
+def text_item(txt, x, y, size=1.8):
+    return [Sym("text"), txt, [Sym("exclude_from_sim"), Sym("no")], [Sym("at"), x, y, 0],
+            [Sym("effects"), [Sym("font"), [Sym("size"), size, size], [Sym("bold"), Sym("yes")]],
+             [Sym("justify"), Sym("left"), Sym("bottom")]],
+            [Sym("uuid"), uid()]]
+
+
+def rect_item(x1, y1, x2, y2):
+    return [Sym("rectangle"), [Sym("start"), x1, y1], [Sym("end"), x2, y2],
+            [Sym("stroke"), [Sym("width"), 0.2], [Sym("type"), Sym("dash")],
+             [Sym("color"), 132, 132, 132, 1]],
+            [Sym("fill"), [Sym("type"), Sym("none")]], [Sym("uuid"), uid()]]
+
+
+def wire_item(x1, y1, x2, y2):
+    return [Sym("wire"), [Sym("pts"), [Sym("xy"), x1, y1], [Sym("xy"), x2, y2]],
+            [Sym("stroke"), [Sym("width"), 0], [Sym("type"), Sym("default")]],
+            [Sym("uuid"), uid()]]
+
+
+def power_item(net, x, y, dx, dy, libs, path):
+    """Power symbol at (x, y) whose body points away from the pin (dx, dy)."""
+    plib = POWER_NETS[net]
+    libs.setdefault(plib, libsym(plib))
+    if net == "GND":
+        rot = {(0, 1): 0, (0, -1): 180, (1, 0): 90, (-1, 0): 270}[(dx, dy)]
+    else:
+        rot = {(0, -1): 0, (0, 1): 180, (1, 0): 270, (-1, 0): 90}[(dx, dy)]
+    _counts["#PWR"] = _counts.get("#PWR", 0) + 1
+    pref = "#PWR%03d" % _counts["#PWR"]
+    vx, vy = x + dx * 5.5, y + dy * 4.5
+    return [Sym("symbol"), [Sym("lib_id"), plib], [Sym("at"), x, y, rot],
+            [Sym("unit"), 1], [Sym("exclude_from_sim"), Sym("no")],
+            [Sym("in_bom"), Sym("no")], [Sym("on_board"), Sym("yes")],
+            [Sym("dnp"), Sym("no")], [Sym("uuid"), uid()],
+            _prop("Reference", pref, x, y, True),
+            _prop("Value", net, vx, vy, net == "GND"),
+            _prop("Footprint", "", x, y, True),
+            _prop("Datasheet", "", x, y, True),
+            [Sym("pin"), "1", [Sym("uuid"), uid()]],
+            [Sym("instances"), [Sym("project"), PROJECT,
+                                [Sym("path"), path, [Sym("reference"), pref],
+                                 [Sym("unit"), 1]]]]]
+
+
+def junction_item(x, y):
+    return [Sym("junction"), [Sym("at"), x, y], [Sym("diameter"), 0],
+            [Sym("color"), 0, 0, 0, 0], [Sym("uuid"), uid()]]
+
+
+def label_item(net, x, y, dx, dy):
+    ang = {(1, 0): 0, (-1, 0): 180, (0, -1): 90, (0, 1): 270}[(dx, dy)]
+    just = "left" if ang in (0, 90) else "right"
+    return [Sym("global_label"), net, [Sym("shape"), Sym("passive")],
+            [Sym("at"), x, y, ang], [Sym("fields_autoplaced"), Sym("yes")],
+            [Sym("effects"), [Sym("font"), [Sym("size"), 1.27, 1.27]],
+             [Sym("justify"), Sym(just)]],
+            [Sym("uuid"), uid()],
+            [Sym("property"), "Intersheetrefs", "${INTERSHEET_REFS}", [Sym("at"), x, y, 0],
+             [Sym("effects"), [Sym("font"), [Sym("size"), 1.27, 1.27]],
+              [Sym("hide"), Sym("yes")]]]]
+
+
+def emit_comp(c, sym, pins, X, Y, libs, path, items):
+    is_power = c["lib"].startswith("power:")
+    ref = c["ref"]
+    rot = c["rot"]
+    if len(pins) == 2 and all(abs(p[3]) < 0.01 for p in pins):
+        rx, ry, vx, vy, just = X + 2.54, Y - 1.27, X + 2.54, Y + 1.27, "left"
+    elif len(pins) == 2:
+        rx, ry, vx, vy, just = X, Y - 3.0, X, Y + 3.3, None
+    else:
+        top = min(p[4] for p in pins)
+        right = max(p[3] for p in pins)
+        rx, ry, vx, vy, just = X + right + 2.54, Y + top - 4.0, X + right + 2.54, Y + top - 1.6, "left"
+
+    def tp(name, val, x, y, hide=False):
+        pr = _prop(name, val, x, y, hide)
+        pr[3][3] = rot
+        if just:
+            pr[4].append([Sym("justify"), Sym(just)])
+        return pr
+
+    s = [Sym("symbol"), [Sym("lib_id"), c["lib"]], [Sym("at"), X, Y, rot], [Sym("unit"), 1],
+         [Sym("exclude_from_sim"), Sym("no")],
+         [Sym("in_bom"), Sym("yes" if c["in_bom"] else "no")],
+         [Sym("on_board"), Sym("yes")], [Sym("dnp"), Sym("no")], [Sym("uuid"), uid()],
+         tp("Reference", ref, rx, ry, is_power),
+         tp("Value", c["value"], vx, vy, is_power)]
+    fpv = c["fp"]
+    if fpv is None:
+        fpv = next((p[2] for p in find(sym, "property") if p[1] == "Footprint"), "")
+    s.append(_prop("Footprint", fpv, X, Y, True))
+    s.append(_prop("Datasheet", "~", X, Y, True))
+    if c["mpn"]:
+        s.append(_prop("MPN", c["mpn"], X, Y, True))
+    for p in pins:
+        s.append([Sym("pin"), p[0], [Sym("uuid"), uid()]])
+    s.append([Sym("instances"), [Sym("project"), PROJECT,
+                                 [Sym("path"), path, [Sym("reference"), ref],
+                                  [Sym("unit"), 1]]]])
+    items.append(s)
+
+    # stubs
+    ends = []          # (net, ex, ey, dx, dy)
+    done = set()
+    for p in pins:
+        px, py = X + p[3], Y + p[4]
+        key = (round(px, 3), round(py, 3))
+        net = c["nets"].get(p[0], "__unset__")
+        if key in done:
+            continue
+        done.add(key)
+        if net == "__unset__" or net is None:
+            if p[2] != "no_connect":
+                items.append([Sym("no_connect"), [Sym("at"), px, py], [Sym("uuid"), uid()]])
+            continue
+        dx, dy = outward(p[5])
+        ex, ey = px + dx * 2.54, py + dy * 2.54
+        items.append(wire_item(px, py, ex, ey))
+        ends.append((net, ex, ey, dx, dy))
+
+    # merge same power net on the same side into one bus with one symbol
+    handled = set()
+    for i, (net, ex, ey, dx, dy) in enumerate(ends):
+        if i in handled or net not in POWER_NETS:
+            continue
+        grp = [j for j, e in enumerate(ends) if e[0] == net and e[3] == dx and e[4] == dy
+               and (abs(e[2] - ey) < 0.01 if dy else abs(e[1] - ex) < 0.01)]
+        if len(grp) > 1:
+            pts = [ends[j] for j in grp]
+            if dy:
+                lo, hi = min(e[1] for e in pts), max(e[1] for e in pts)
+                clash = any(abs(e[2] - ey) < 0.01 and lo < e[1] < hi
+                            for k, e in enumerate(ends) if k not in grp)
+            else:
+                lo, hi = min(e[2] for e in pts), max(e[2] for e in pts)
+                clash = any(abs(e[1] - ex) < 0.01 and lo < e[2] < hi
+                            for k, e in enumerate(ends) if k not in grp)
+            if not clash:
+                handled.update(grp)
+                if dy:
+                    items.append(wire_item(lo, ey, hi, ey))
+                    inner = [e[1] for e in pts if lo < e[1] < hi]
+                    items.extend(junction_item(v, ey) for v in inner)
+                    items.append(power_item(net, lo, ey, dx, dy,
+                                            libs, path))
+                else:
+                    items.append(wire_item(ex, lo, ex, hi))
+                    inner = [e[2] for e in pts if lo < e[2] < hi]
+                    items.extend(junction_item(ex, v) for v in inner)
+                    items.append(power_item(net, ex, hi if net == "GND" else lo, dx, dy,
+                                            libs, path))
+                continue
+        handled.add(i)
+        items.append(power_item(net, ex, ey, dx, dy, libs, path))
+    for net, ex, ey, dx, dy in ends:
+        if net not in POWER_NETS:
+            items.append(label_item(net, ex, ey, dx, dy))
 
 
 def build_sheet(page, root_uuid, sheet_uuid):
     comps = PAGES[page]
     libs = {}
     items = []
-    # bbox per comp
-    placed = []
-    for c in comps:
-        sym = libs.setdefault(c["lib"], libsym(c["lib"]))
-        pins = pins_of(sym)
-        known = {p[0] for p in pins}
-        missing = set(c["nets"]) - known
-        assert not missing, (c["ref"], missing)
-        minx = min([p[3] for p in pins] + [0]) - 2.54
-        maxx = max([p[3] for p in pins] + [0]) + 2.54
-        miny = min([-p[4] for p in pins] + [0]) - 2.54
-        maxy = max([-p[4] for p in pins] + [0]) + 2.54
-        for p in pins:
-            net = c["nets"].get(p[0])
-            if not net:
-                continue
-            dx, dy = outward(p[5])
-            ext = 2.54 + (0 if net in POWER_NETS else label_len(net)) + (5 if net in POWER_NETS else 0)
-            px, py = p[3], -p[4]
-            minx = min(minx, px + dx * ext - (1 if dx == 0 else 0))
-            maxx = max(maxx, px + dx * ext + (1 if dx == 0 else 0))
-            miny = min(miny, py + dy * ext)
-            maxy = max(maxy, py + dy * ext)
-        placed.append([c, sym, pins, (minx, miny, maxx, maxy)])
-    # flow layout
-    width_limit = 380
-    x, y, rowh = 20.0, 25.0, 0.0
-    for e in placed:
-        minx, miny, maxx, maxy = e[3]
-        w, h = maxx - minx + 14, maxy - miny + 16
-        if x + w > width_limit and x > 20:
-            x, y, rowh = 20.0, y + rowh, 0.0
-        e.append((snap(x - minx), snap(y - miny)))
-        x += w
-        rowh = max(rowh, h)
-    paper = "A3" if y + rowh < 280 else "A2"
-    pnum = [i for i, (n, _) in enumerate(SHEETS) if n == page][0] + 2
     path = "/%s/%s" % (root_uuid, sheet_uuid)
-    for c, sym, pins, bbox, (X, Y) in placed:
-        is_power = c["lib"].startswith("power:")
-        two_pin = len(pins) == 2 and all(abs(p[3]) < 0.01 for p in pins)
-        if two_pin:
-            rx, ry = X + 2.54, Y - 1.27
-        else:
-            rx, ry = X + max(p[3] for p in pins) + 1.27, Y + min(-p[4] for p in pins) - 6.35
-        ref = c["ref"]
-        s = [Sym("symbol"), [Sym("lib_id"), c["lib"]], [Sym("at"), X, Y, 0], [Sym("unit"), 1],
-             [Sym("exclude_from_sim"), Sym("no")],
-             [Sym("in_bom"), Sym("yes" if c["in_bom"] else "no")],
-             [Sym("on_board"), Sym("yes" if not is_power else "yes")],
-             [Sym("dnp"), Sym("no")], [Sym("uuid"), uid()],
-             _prop("Reference", ref, rx, ry, is_power),
-             _prop("Value", c["value"], rx, ry + 2.54, is_power)]
-        fpv = c["fp"]
-        if fpv is None:
-            fpv = next((p[2] for p in find(sym, "property") if p[1] == "Footprint"), "")
-        s.append(_prop("Footprint", fpv, X, Y, True))
-        s.append(_prop("Datasheet", "~", X, Y, True))
-        if c["mpn"]:
-            s.append(_prop("MPN", c["mpn"], X, Y, True))
-        for p in pins:
-            s.append([Sym("pin"), p[0], [Sym("uuid"), uid()]])
-        s.append([Sym("instances"), [Sym("project"), PROJECT,
-                                     [Sym("path"), path, [Sym("reference"), ref],
-                                      [Sym("unit"), 1]]]])
-        items.append(s)
-        done = set()
-        for p in pins:
-            px, py = X + p[3], Y - p[4]
-            key = (round(px, 3), round(py, 3))
-            net = c["nets"].get(p[0], "__unset__")
-            if key in done:
-                continue
-            done.add(key)
-            if net == "__unset__" or net is None:
-                if p[2] != "no_connect":
-                    items.append([Sym("no_connect"), [Sym("at"), px, py], [Sym("uuid"), uid()]])
-                continue
-            dx, dy = outward(p[5])
-            ex, ey = px + dx * 2.54, py + dy * 2.54
-            items.append([Sym("wire"), [Sym("pts"), [Sym("xy"), px, py], [Sym("xy"), ex, ey]],
-                          [Sym("stroke"), [Sym("width"), 0], [Sym("type"), Sym("default")]],
-                          [Sym("uuid"), uid()]])
-            if net in POWER_NETS:
-                plib = POWER_NETS[net]
-                psym = libs.setdefault(plib, libsym(plib))
-                # GND points down, rails point up: rotate so the symbol sits outward
-                rot = 0
-                if net == "GND" and dy < 0:
-                    rot = 180
-                if net != "GND" and dy > 0:
-                    rot = 180
-                _counts["#PWR"] = _counts.get("#PWR", 0) + 1
-                pref = "#PWR%03d" % _counts["#PWR"]
-                items.append([Sym("symbol"), [Sym("lib_id"), plib], [Sym("at"), ex, ey, rot],
-                              [Sym("unit"), 1], [Sym("exclude_from_sim"), Sym("no")],
-                              [Sym("in_bom"), Sym("no")], [Sym("on_board"), Sym("yes")],
-                              [Sym("dnp"), Sym("no")], [Sym("uuid"), uid()],
-                              _prop("Reference", pref, ex, ey, True),
-                              _prop("Value", net, ex + 1.27, ey + (-3.81 if net != "GND" else 3.81),
-                                    net == "GND"),
-                              _prop("Footprint", "", ex, ey, True),
-                              _prop("Datasheet", "", ex, ey, True),
-                              [Sym("pin"), "1", [Sym("uuid"), uid()]],
-                              [Sym("instances"), [Sym("project"), PROJECT,
-                                                  [Sym("path"), path, [Sym("reference"), pref],
-                                                   [Sym("unit"), 1]]]]])
-            else:
-                ang = {(1, 0): 0, (-1, 0): 180, (0, -1): 90, (0, 1): 270}[(dx, dy)]
-                just = "left" if ang in (0, 90) else "right"
-                items.append([Sym("global_label"), net, [Sym("shape"), Sym("passive")],
-                              [Sym("at"), ex, ey, ang], [Sym("fields_autoplaced"), Sym("yes")],
-                              [Sym("effects"), [Sym("font"), [Sym("size"), 1.27, 1.27]],
-                               [Sym("justify"), Sym(just)]],
-                              [Sym("uuid"), uid()],
-                              [Sym("property"), "Intersheetrefs", "${INTERSHEET_REFS}",
-                               [Sym("at"), ex, ey, 0],
-                               [Sym("effects"), [Sym("font"), [Sym("size"), 1.27, 1.27]],
-                                [Sym("hide"), Sym("yes")]]]])
+    pnum = [i for i, (n, _) in enumerate(SHEETS) if n == page][0] + 2
+
+    # group into blocks, keep order
+    blocks = []
+    for c in comps:
+        if not blocks or blocks[-1][0] != c["block"]:
+            blocks.append((c["block"], []))
+        sym = libs.setdefault(c["lib"], libsym(c["lib"]))
+        raw = pins_of(sym)
+        missing = set(c["nets"]) - {p[0] for p in raw}
+        assert not missing, (c["ref"], missing)
+        pins = place_pins(raw, c["rot"])
+        blocks[-1][1].append((c, sym, pins, comp_bbox(c, pins)))
+
+    # lay out each block: members in rows, max block width
+    MAXW = 185
+    laid = []
+    for name, members in blocks:
+        rows, row, w = [], [], 0
+        for m in members:
+            bw = m[3][2] - m[3][0] + 4
+            if row and w + bw > MAXW:
+                rows.append(row)
+                row, w = [], 0
+            row.append(m)
+            w += bw
+        rows.append(row)
+        placed, y, bw_max = [], 10.0, 0
+        for row in rows:
+            x = 4.0
+            top = min(m[3][1] for m in row)
+            bot = max(m[3][3] for m in row)
+            for m in row:
+                X = x - m[3][0]
+                Y = y - top
+                placed.append((m, X, Y))
+                x += m[3][2] - m[3][0] + 4
+            bw_max = max(bw_max, x)
+            y += bot - top + 4
+        laid.append((name, placed, bw_max + 2, y + 2))
+
+    # arrange blocks on the page in rows
+    page_w = 395
+    bx, by, rowh = 15.0, 15.0, 0.0
+    for name, placed, bw, bh in laid:
+        if bx + bw > page_w and bx > 15:
+            bx, by, rowh = 15.0, by + rowh + 8, 0.0
+        ox, oy = snap(bx), snap(by)
+        items.append(rect_item(ox, oy, ox + bw, oy + bh))
+        items.append(text_item(name, ox + 1.5, oy + 5))
+        for (c, sym, pins, bb), X, Y in placed:
+            emit_comp(c, sym, pins, snap(ox + X), snap(oy + Y), libs, path, items)
+        bx += bw + 8
+        rowh = max(rowh, bh)
+    paper = "A3" if by + rowh < 275 else "A2"
     doc = [Sym("kicad_sch"), [Sym("version"), Sym("20231120")],
            [Sym("generator"), "eeschema"], [Sym("generator_version"), "8.0"],
            [Sym("uuid"), sheet_file_uuid[page]], [Sym("paper"), paper],
