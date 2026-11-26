@@ -284,11 +284,11 @@ LCSC = {
     ("100uF 63V", None): "C46528099", ("SMBJ30A", None): "C113998", ("BAT54C", None): "C37704",
     ("XT60PW-M", None): "C98732", ("RT9013-33GB", None): "C47773", ("ESDCAN24-2BLY", None): "C246766",
     ("エンコーダ1", None): "C225449", ("エンコーダ2", None): "C225449", ("SWD", None): "C157993",
-    ("RJ45", None): "C385834", ("STM32G431CBT6", None): "C529355", ("SRV05-4", None): "C85364",
+    ("RJ45", None): "C385834", ("STM32G474CBT6", None): "C730123", ("SRV05-4", None): "C85364",
     ("CA-IS2062A", None): "C22438481", ("8MHz", None): "C5308003", ("2.2uF 100V", None): "C55151",
     ("SS16", None): "C2481", ("22uH", None): "C83454", ("NTMFS5C628NLT1G", None): "C145537",
     ("0.5m", None): "C710260", ("10k NTC", None): "C13564", ("DRV8323RHRGZR", None): "C543035",
-    ("1uF 50V", "C_1206_3216"): "C1848", ("SN74LVC1G17", None): "C7836",
+    ("1uF 50V", "C_1206_3216"): "C1848", ("SN74LVC1G17", None): "C2862344",
 }
 
 PAGES = {}    # page -> list of comps
@@ -458,7 +458,7 @@ mcu = {"1": "+3V3", "2": NC, "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
        "34": "CAN_TX", "35": "GND", "36": "+3V3", "37": "SWDIO", "38": "SWCLK", "39": NC,
        "40": "ENC1_B", "41": "ENC1_A", "42": "ENC1_Z", "43": "ENC1_A", "44": "ENC1_B",
        "45": "BOOT0", "46": "LED2", "47": "GND", "48": "+3V3"}
-comp(M, "U", "MCU_ST_STM32G4:STM32G431CBTx", "STM32G431CBT6", mcu, (210, 140))
+comp(M, "U", "MCU_ST_STM32G4:STM32G431CBTx", "STM32G474CBT6", mcu, (210, 140))
 for net in ("ISENSE_C", "NTC_SENSE", "PWM_AL", "PWM_BL", "PWM_CL", "DRV_CAL", "DRV_EN",
             "DRV_NFAULT"):
     port(M, net, (180, None), "L",
@@ -612,7 +612,7 @@ comp(M, "JP", "Jumper:SolderJumper_3_Bridged12", "ENC2 5V/3V",
 for i, s in enumerate(e2):
     comp(M, "U", "74xGxx:74LVC1G17", "SN74LVC1G17",
          {"1": NC, "2": s + "_BUF", "3": "GND", "4": s, "5": "+3V3"},
-         (278, 64 + 35.56 * i), 180, "SOT23-5", "SN74LVC1G17DBVR")
+         (278, 64 + 35.56 * i), 180, "SOT23-5", "SN74LVC1G17DBVT")
 C(M, "100nF", "+3V3", "GND", (302, 64))
 
 SHEETS = [("power", "電源"), ("bridge", "パワー段"), ("ctrl", "制御 (MCU・CAN・エンコーダ)")]

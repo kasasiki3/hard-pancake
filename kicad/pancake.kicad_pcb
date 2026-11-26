@@ -475,7 +475,7 @@
 				)
 			)
 		)
-		(property "MPN" "SN74LVC1G17DBVR"
+		(property "MPN" "SN74LVC1G17DBVT"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -487,7 +487,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7836"
+		(property "LCSC" "C2862344"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -14739,7 +14739,7 @@
 				)
 			)
 		)
-		(property "MPN" "SN74LVC1G17DBVR"
+		(property "MPN" "SN74LVC1G17DBVT"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -14751,7 +14751,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7836"
+		(property "LCSC" "C2862344"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -18539,7 +18539,7 @@
 				)
 			)
 		)
-		(property "Value" "STM32G431CBT6"
+		(property "Value" "STM32G474CBT6"
 			(at 0 5.85 180)
 			(layer "F.Fab")
 			(uuid "43a265aa-6dbd-4fcd-a35b-f7b97e6d2dce")
@@ -18584,7 +18584,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C529355"
+		(property "LCSC" "C730123"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -21524,7 +21524,7 @@
 				)
 			)
 		)
-		(property "MPN" "SN74LVC1G17DBVR"
+		(property "MPN" "SN74LVC1G17DBVT"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -21536,7 +21536,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7836"
+		(property "LCSC" "C2862344"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)

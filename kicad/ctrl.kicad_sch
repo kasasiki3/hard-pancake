@@ -5911,7 +5911,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "STM32G431CBT6"
+		(property "Value" "STM32G474CBT6"
 			(at 228.6 97.06 0)
 			(effects
 				(font
@@ -5938,7 +5938,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C529355"
+		(property "LCSC" "C730123"
 			(at 210.82 139.7 0)
 			(effects
 				(font
@@ -13526,7 +13526,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "SN74LVC1G17DBVR"
+		(property "MPN" "SN74LVC1G17DBVT"
 			(at 276.86 63.5 0)
 			(effects
 				(font
@@ -13535,7 +13535,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7836"
+		(property "LCSC" "C2862344"
 			(at 276.86 63.5 0)
 			(effects
 				(font
@@ -13748,7 +13748,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "SN74LVC1G17DBVR"
+		(property "MPN" "SN74LVC1G17DBVT"
 			(at 276.86 99.06 0)
 			(effects
 				(font
@@ -13757,7 +13757,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7836"
+		(property "LCSC" "C2862344"
 			(at 276.86 99.06 0)
 			(effects
 				(font
@@ -13970,7 +13970,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "SN74LVC1G17DBVR"
+		(property "MPN" "SN74LVC1G17DBVT"
 			(at 276.86 134.62 0)
 			(effects
 				(font
@@ -13979,7 +13979,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7836"
+		(property "LCSC" "C2862344"
 			(at 276.86 134.62 0)
 			(effects
 				(font

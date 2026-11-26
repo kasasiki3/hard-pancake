@@ -3,7 +3,7 @@
 実行: python tools/export_jlc.py   （KiCad 10 の kicad-cli を使う）
 - ガーバー・ドリルは zip にまとめる（JLCのPCB注文にそのまま上げる）
 - BOM は LCSC番号でまとめる。DNP・BOM除外（テストポイント・取付穴・モーターパッド・ネットタイ）は入れない。
-  手はんだの部品（HAND）はJLCのBOM・CPLから外し、pancake_bom_hand.csv に出す
+  手はんだの部品（HAND、コネクタ）はJLCのBOM・CPLから外し、pancake_bom_hand.csv に出す
 - CPL の回転は KiCad の値に、JLCとKiCadで基準が違うパッケージの補正を足したもの。補正表は
   kicad-jlcpcb-tools の既定表に倣った推定なので、発注画面の部品配置プレビューで極性・向きを必ず目で確かめる
 """
@@ -28,12 +28,9 @@ GBR = os.path.join(OUT, "gerber")
 # LQFP-48が270°になるのは kicad-jlcpcb-tools の既定表と一致。XT60(C98732)はパッド番号の振り方が違い照合できないので要目視。
 ROT = {"C46528099": 180, "C113998": 180, "C37704": 180, "C2481": 0, "C2286": 180, "C246766": 180, "C225449": 180,
        "C157991": 180, "C157993": 180, "C385834": 180, "C83454": 0, "C145537": 90, "C318884": 0, "C47773": 270,
-       "C543035": 0, "C529355": 270, "C558419": 90, "C85364": 0, "C22438481": 0, "C7836": 180, "C5308003": 180, "C98732": 0, "C13564": 0}
-# 手はんだする部品（JLCのBOM・CPLから外し、pancake_bom_hand.csv に出す）。コネクタと、手はんだできるExtended部品（2026-11-26 本人方針）。
-# Extendedでも JLC に残すのはリフローが要るもの: Q(SO-8FLの露出パッド)、U2(QFN)、U3(LQFP 0.5mm)、U6(LGA)、Y1(裏面電極)。BOM.md と対応させる
-HAND = {"C98732": "XT60", "C385834": "RJ45", "C157993": "JST PH", "C225449": "JST XA", "C46528099": "電解 10×10.5",
-        "C55151": "1210", "C710260": "2512", "C83454": "6×6インダクタ", "C113998": "SMB", "C2481": "SMA", "C246766": "SOT-23",
-        "C47773": "SOT-23-5", "C7836": "SOT-23-5", "C13564": "0603"}
+       "C543035": 0, "C730123": 270, "C558419": 90, "C85364": 0, "C22438481": 0, "C2862344": 270, "C5308003": 180, "C98732": 0, "C13564": 0}
+# 手はんだする部品（JLCのBOM・CPLから外し、pancake_bom_hand.csv に出す）。コネクタだけ（2026-11-26 本人方針。表面実装部品は全てJLCで実装）。BOM.md と対応させる
+HAND = {"C98732": "XT60", "C385834": "RJ45", "C157993": "JST PH", "C225449": "JST XA"}
 
 
 def run(*a):
@@ -73,6 +70,12 @@ def main():
         g.append(ref)
     key = lambda r: (re.sub(r"\d", "", r), int(re.sub(r"\D", "", r) or 0))
     order = lambda t: key(sorted(t[1], key=key)[0])
+    # 同じLCSC番号が値の書き方違いで複数行になるとJLCが重複として数量0にするので、LCSC番号とフットプリントで1行にまとめる
+    merged = {}
+    for (lcsc, val, fp), refs in sorted(groups.items(), key=lambda t: -len(t[1])):
+        k = next((m for m in merged if lcsc and m[0] == lcsc and m[2] == fp), (lcsc, val, fp))
+        merged.setdefault(k, []).extend(refs)
+    groups = merged
     hand = {k: v for k, v in groups.items() if k[0] in HAND}
     groups = {k: v for k, v in groups.items() if k[0] not in HAND}
     with open(os.path.join(OUT, "pancake_bom_jlc.csv"), "w", newline="", encoding="utf-8-sig") as f:
