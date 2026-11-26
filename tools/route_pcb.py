@@ -14,7 +14,7 @@ from shapely.geometry import LineString, Point, Polygon
 BUILD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
 G = json.load(open(os.path.join(BUILD, "geo.json")))
 S = .1
-N = 901
+N = 931
 CLR = .155
 VR = .25
 WID = [.2, .25, .4]

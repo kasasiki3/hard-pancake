@@ -3,8 +3,12 @@
 実行順（Gitルートで）:
   kicad-cli sch export netlist kicad/pancake.kicad_sch -o tools/build/n.net
   <KiCad>/bin/python tools/gen_pcb.py place     配置・銅箔・ビア → build/placed.kicad_pcb, build/geo.json
-  python tools/route_pcb.py                     自動配線 → build/routes<乱数の種>.json。採用したものを tools/routes.json に置く
-  <KiCad>/bin/python tools/gen_pcb.py finish    配線を入れてゾーン充填 → kicad/pancake.kicad_pcb
+  python tools/route_pcb.py                     自動配線 → build/routes<乱数の種>.json。採用したものを tools/routes.json に置く（81mm版まで）
+  <KiCad>/bin/python tools/gen_pcb.py finish    配線を入れてゾーン充填 → kicad/pancake.kicad_pcb（81mm版まで）
+  92mm版（2026-11-26〜）は finish の代わりに:
+  <KiCad>/bin/python tools/fr_route.py base     81mm版の配線(tools/routes_81.json)を固定で入れる（J5・J6・C49・C50のネットは除く）
+  <KiCad>/bin/python tools/route_enc.py         エンコーダ端子の8本を引く → build/routes_enc.json
+  <KiCad>/bin/python tools/fr_route.py final    足してゾーン充填 → kicad/pancake.kicad_pcb
 """
 import json
 import math
@@ -21,7 +25,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUILD = os.path.join(ROOT, "tools", "build")
 OUT = os.path.join(ROOT, "kicad", "pancake.kicad_pcb")
 FPLIB = "C:/Program Files/KiCad/10.0/share/kicad/footprints/"
-W, H = 81.0, 68.0
+W, H = 92.0, 68.0    # 2026-11-26 エンコーダ端子を右辺へ移すため81→92mm
 CR = 4.5    # 角の丸み。moteusと同じく取付穴の中心と同心にする
 COLS = {"A": 22.8, "B": 40.2, "C": 57.6}
 CAPX = (31.5, 48.9, 66.3)    # 電解は各相のFETの隣
@@ -47,7 +51,7 @@ def arc(cx, cy, r, a0):
 
 MAIN = [(33.3, .55)] + arc(W - CR, CR, CR - .55, 270) + arc(W - CR, H - CR, CR - .55, 0) + arc(CR, H - CR, CR - .55, 90) + [
     (.55, 41.4), (19.4, 41.4), (19.4, 30.4), (33.3, 30.4)]
-P3V3 = [(33.8, 1), (76.2, 1), (80, 5), (80, 63), (76.2, 67), (64.6, 67), (64.6, 50), (66.2, 50), (66.2, 45), (71.2, 45), (71.2, 27.6), (43, 27.6),
+P3V3 = [(33.8, 1), (W - 4.8, 1), (W - 1, 5), (W - 1, 63), (W - 4.8, 67), (64.6, 67), (64.6, 50), (66.2, 50), (66.2, 45), (71.2, 45), (71.2, 27.6), (43, 27.6),
         (43, 16.4), (33.8, 16.4)]
 VBUS_IN2 = [(33.6, 17), (42.4, 17), (42.4, 27), (41, 27), (41, 36), (70.6, 36), (70.6, 44.2), (65.4, 44.2), (65.4, 49.2), (11, 49.2), (11, 48.4), (.8, 48.4), (.8, 41.8), (19.8, 41.8),
             (19.8, 31), (33.6, 31)]
@@ -61,13 +65,16 @@ PLACE = {
     "C2": (48.9, 37, 90),
     "C3": (66.3, 37, 90),
     "H1": (4.5, 4.5, 0),
-    "H2": (76.5, 4.5, 0),
+    "H2": (W - 4.5, 4.5, 0),
     "H3": (4.5, 63.5, 0),
-    "H4": (76.5, 63.5, 0),
+    "H4": (W - 4.5, 63.5, 0),
     "J8": (7.74, 16.2, -90),
     "J9": (7.74, 32.7, -90),
-    "J5": (76.8, 56.8, 90),
-    "J6": (69.2, 62.5, 90),
+    "J5": (W - 4.4, 36.0, 270),    # ENC1（下）
+    "J6": (W - 4.4, 12.0, 270),    # ENC2（上、バッファU7〜U9の横）
+    # 端子VCCの1µF。1番ピン(VCC)と2番(GND)の左横
+    "C49": (W - 10.6, 37.25, 270),
+    "C50": (W - 10.6, 13.25, 270),
     "U4": (78.8, 39.2, 90),
     "R23": (77.4, 35.0, 90),
     "R22": (78.6, 35.0, 90),
@@ -178,7 +185,7 @@ for i, (ph, c) in enumerate(COLS.items()):
 
 
 DENSE = set("C4 C5 R17 R21 R22 R23 R24 R25 R26 R1 R2 R4 R5 R6 C6 C7 C8 C9 C28 C29 C30 C31 C32 C33 C34 C35 C36 C39 C40 C41 C42 C43 C44 C48 R18 R27 R28 R29 R30 "
-            "R3 R7 R8 R9 R10 C10 C11 C12 C15 C16 C17 C20 C23 C26 TH1 R20 C19 C22 C25 C1 C2 C3".split())
+            "R3 R7 R8 R9 R10 C10 C11 C12 C15 C16 C17 C20 C23 C26 TH1 R20 C19 C22 C25 C1 C2 C3 C49 C50".split())
 
 
 def netlist():
@@ -251,8 +258,12 @@ def place():
                     f.SetField(k, v)
                     f.GetField(k).SetVisible(False)
         # 部品が密な所の番号は実装図(F.Fab)側だけにし、シルクには出さない
-        if ref[0] in "HRCT" and (ref[0] == "H" or ref in DENSE) or ref in ("J2", "J3", "J4", "J1", "R21", "R22", "R23", "R24", "R25", "R26", "TP10", "TP11", "TP12", "TP14", "TP15", "TP20", "U4", "U5", "D1", "R17", "C38", "J8", "J9", "D6", "R11", "R13", "R15", "J5", "J6", "J7", "SW1", "D4", "D5", "C17", "D3", "U2", "R19"):
+        if ref[0] in "HRCT" and (ref[0] == "H" or ref in DENSE) or ref in ("J2", "J3", "J4", "J1", "R21", "R22", "R23", "R24", "R25", "R26", "TP10", "TP11", "TP12", "TP14", "TP15", "TP20", "U4", "U5", "D1", "R17", "C38", "J8", "J9", "D6", "R11", "R13", "R15", "J5", "J6", "J7", "SW1", "D4", "D5", "C17", "D3", "U2", "R19",
+                                                                                    # 文字が他の部品やパッドに重なるもの（2026-11-26）
+                                                                                    "C37", "C45", "C46", "C47", "Q1", "Q3", "Q5", "U3", "U7", "U8", "U9", "JP2", "Y1"):
             f.Reference().SetVisible(False)
+        if ref in ("TP2", "TP5", "TP8"):    # 上はTP3等の丸に重なるので右へ
+            f.Reference().SetPosition(V(x + 1.8, y))
         f.Reference().SetTextSize(V(.8, .8))
         f.Reference().SetTextThickness(MM(.12))
         if ref[0] == "H":
@@ -413,7 +424,7 @@ def place():
         gv += [(x, yy) for yy in (76.4, 77.6) for x in (-9.6, -8.4, -7.2, -6, -4.8, -3.6, -2.4, -1.2, 0, 1.2, 2.4)]
         for x, y in gv:
             # 右下のねじの座面にかかるビアは置かない
-            if (c + x - 76.5) ** 2 + (y - 11 - 63.5) ** 2 > 3.5 ** 2:
+            if (c + x - (W - 4.5)) ** 2 + (y - 11 - 63.5) ** 2 > 3.5 ** 2:
                 via("GND", c + x, y)
         # ゲート・検出線の縦束（裏面）。並びをDRVのピン順に合わせる（Bだけ逆順）
         Y0 = 50
@@ -492,18 +503,21 @@ def place():
     for side in (F_Cu, B_Cu):
         for t, c in COLS.items():
             text(t, c - 3.2, 66, 1.4, side)
-    text("+++", 4.2, 45.6, .9, B_Cu)
-    text("---", 4.2, 52.8, .9, B_Cu)
-    # 1番ピンから順に並べた信号名 (JST XA 6ピン、縦置き: 下が1番ピン)。ENC1だけSSIにも使える
-    for x, y0 in ((73.0, 56.8), (65.4, 62.5)):
-        for i, t in enumerate(("V", "G", "G", "A", "B", "Z")):
-            text(t, x, y0 - 2.5 * i, .8)
-    text("ENC1", 76.8, 40.9, .8)
-    text("ENC2", 69.2, 46.5, .8)
+    text("+++", 3.4, 45.6, .9, B_Cu)
+    text("---", 3.4, 52.8, .9, B_Cu)
+    # 1番ピンから順に並べた信号名 (JST XA 6ピン、縦置き、1番ピンが上)。パッドの位置から左に書く。ENC1だけSSIにも使える
+    for ref, nm in (("J5", "ENC1"), ("J6", "ENC2")):
+        f = b.FindFootprintByReference(ref)
+        ps = sorted(f.Pads(), key=lambda p: int(p.GetNumber()))
+        for p, t in zip(ps, ("V", "G", "G", "A", "B", "Z")):
+            text(t, p.GetPosition().x / 1e6 - 4.6, p.GetPosition().y / 1e6, .8)
+        x1, y1 = ps[0].GetPosition().x / 1e6, ps[0].GetPosition().y / 1e6
+        text(nm, x1 - .3, y1 - 4.0, .8)
+    x6, y6 = PLACE["J5"][0], PLACE["J5"][1] + 12.5
+    for i, t in enumerate(("ENC1 SSI", "A=DO", "B=CLK", "Z=CSN")):
+        text(t, x6 - .6, y6 + 4.4 + 1.2 * i, .8)
     text("E1", 78.5, 21.0, .8)
     text("E2", 78.5, 32.5, .8)
-    for i, t in enumerate(("ENC1 SSI", "A=DO", "B=CLK", "Z=CSN")):
-        text(t, 69.2, 62.8 + 1.25 * i, .8)
     for i, t in enumerate(("5", "D", "C", "R", "G")):
         text(t, 62.3 + 2 * i, 1.4, .8)
     text("SWD", 59.4, 1.4, .8)
@@ -513,7 +527,7 @@ def place():
     text("CAN", 17.7, 33.6, .9)
     text("ISOLATED", 22.5, 4, .8)
     for i, t in enumerate(("SOA", "SOB", "SOC", "FLT", "DVD", "GND")):
-        text(t, 54.6 + 2.6 * i, 27.7, .8)
+        text(t, 54.6 + 2.6 * i, 27.7 if i >= 4 else 30.75, .8)    # SOA〜FLTはTPの下（上はR17と重なる）、DVD・GNDは上（下はC3のパッド）
     ds = b.GetDesignSettings()
     ds.m_MinClearance = MM(.13)
     ds.m_TrackMinWidth = MM(.15)
