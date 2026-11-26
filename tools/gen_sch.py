@@ -344,7 +344,8 @@ P = "power"
 block("電源入力・保護")
 comp(P, "J", "Connector_Generic:Conn_01x02", "XT60PW-M", {"1": "VBUS", "2": "GND"},
      (35, 60), 180, txt="left", fp="pancake:XT60PW-M_1plus_2minus")
-comp(P, "D", "Device:D_TVS", "SMBJ30A", {"1": "VBUS", "2": "GND"}, (55, 60), 270, "SMB")
+# SMBJ30Aは単方向。極性が見えるようにツェナーの記号を使う（1=K=VBUS、2=A=GND）
+comp(P, "D", "Device:D_Zener", "SMBJ30A", {"1": "VBUS", "2": "GND"}, (55, 60), 270, "SMB")
 for i in range(3):
     comp(P, "C", "Device:C_Polarized", "100uF 63V", {"1": "VBUS", "2": "GND"}, (72 + 17 * i, 60),
          0, "CP10", "118EC447")

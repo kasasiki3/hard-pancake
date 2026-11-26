@@ -9,3 +9,5 @@ tools/__pycache__/
 kicad/.history/
 tools/build/
 sim/run
+kicad/production/gerber/
+kicad/production/pancake.xml

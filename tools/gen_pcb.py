@@ -473,7 +473,7 @@ def place():
         for p in f.Pads():
             if f.GetReference()[0] in "QCRD" and p.GetNetname() not in ("GND", "GND_ISO"):
                 p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
-            if f.GetReference() in ("R11", "R13", "R15", "J1", "D1", "C1", "C2", "C3", "C19", "C20", "C22", "C23", "C25", "C26", "C7", "C8", "C39", "U2") or f.GetReference() == "J1":
+            if f.GetReference() in ("R11", "R13", "R15", "J1", "D1", "C1", "C2", "C3", "C19", "C20", "C22", "C23", "C25", "C26", "C7", "C8", "C39", "U2", "C12", "C13") or f.GetReference() == "J1":
                 p.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
     # 表示
     def text(t, x, y, size=1.0, side=F_Cu):
@@ -493,11 +493,11 @@ def place():
     # 1番ピンから順に並べた信号名 (JST XA 6ピン、縦置き: 下が1番ピン)。ENC1だけSSIにも使える
     for x, y0 in ((73.0, 56.8), (65.4, 62.5)):
         for i, t in enumerate(("V", "G", "G", "A", "B", "Z")):
-            text(t, x, y0 - 2.5 * i, .7)
+            text(t, x, y0 - 2.5 * i, .8)
     text("ENC1", 76.8, 40.9, .8)
     text("ENC2", 69.2, 46.5, .8)
-    text("E1", 78.5, 21.0, .7)
-    text("E2", 78.5, 32.5, .7)
+    text("E1", 78.5, 21.0, .8)
+    text("E2", 78.5, 32.5, .8)
     for i, t in enumerate(("ENC1 SSI", "A=DO", "B=CLK", "Z=CSN")):
         text(t, 69.2, 62.8 + 1.25 * i, .8)
     for i, t in enumerate(("5", "D", "C", "R", "G")):

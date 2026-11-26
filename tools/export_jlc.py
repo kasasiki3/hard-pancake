@@ -21,13 +21,13 @@ SCH = os.path.join(ROOT, "kicad", "pancake.kicad_sch")
 OUT = os.path.join(ROOT, "kicad", "production")
 GBR = os.path.join(OUT, "gerber")
 
-# (フットプリント名の正規表現, 足す角度)。tools/jlc_rotation.py で、JLC(EasyEDA)のフットプリントのパッド番号の配置と
-# KiCadのものを突き合わせて求めた（2026-11-26）。JLCの回転は反時計回りを正とみなしている（90/270の部品はこの前提に依存）。
-# 一致を確かめたもの: SOT-23(D2,D6) 180、SOT-23-5(U1) 270、SO-8FL(Q) 90、VQFN-48(U2) 0、CP_Elec 180、SMB 180、SMA 0、
-# LED_0603 180、JST XH/PH 180、RJ45 180、SWPA6045S 0、TS-1187A 0（同番号パッドの組で確認）。
-# LQFP-48・SOT-23-6・CA-IS2062A・水晶はEasyEDAの取得が制限で失敗し未確認（0のまま）。発注画面のプレビューで必ず確かめる
-ROT = [(r"^SOT-23-5", 270), (r"^SOT-23-6", 0), (r"^SOT-23$", 180), (r"^ONSemi_SO-8FL", 90), (r"^CP_Elec_", 180),
-       (r"^D_SMB", 180), (r"^LED_0603", 180), (r"^JST_XH_", 180), (r"^JST_PH_", 180), (r"^RJ45_", 180)]
+# LCSC番号ごとに足す角度。tools/jlc_rotation.py で JLC(EasyEDA)のフットプリントのパッド番号の配置と KiCad のものを
+# 突き合わせ、EasyEDA = KiCad を d°回したもの、となる d から 補正 = -d とした（2026-11-26）。JLCの回転は反時計回りを正とみなす。
+# 同じSOT-23-5でも部品ごとにEasyEDAの向きが違う（RT9013は270°、SN74LVC1G17は180°）ので、フットプリント名でなくLCSC番号で持つ。
+# LQFP-48が270°になるのは kicad-jlcpcb-tools の既定表と一致。XT60(C98732)はパッド番号の振り方が違い照合できないので要目視。
+ROT = {"C46528099": 180, "C113998": 180, "C37704": 180, "C2481": 0, "C2286": 180, "C246766": 180, "C225449": 180,
+       "C157991": 180, "C157993": 180, "C385834": 180, "C83454": 0, "C145537": 90, "C318884": 0, "C47773": 270,
+       "C543035": 0, "C529355": 270, "C558419": 90, "C22438481": 0, "C7836": 180, "C5308003": 180, "C98732": 0, "C13564": 0}
 
 
 def run(*a):
@@ -72,21 +72,23 @@ def main():
         for (lcsc, val, fp), refs in sorted(groups.items(), key=lambda t: key(sorted(t[1], key=key)[0])):
             w.writerow([val, ",".join(sorted(refs, key=key)), fp, lcsc])
     bom_refs = {r for refs in groups.values() for r in refs}
+    ref_lcsc = {r: k[0] for k, refs in groups.items() for r in refs}
 
     # CPL
     pos = os.path.join(OUT, "pos.csv")
     run("pcb", "export", "pos", "--format", "csv", "--units", "mm", "--side", "both", "--exclude-dnp", "-o", pos, PCB)
-    rows = []
+    rows, unknown = [], set()
     with open(pos, encoding="utf-8") as f:
         for r in csv.DictReader(f):
             ref = r["Ref"]
             if ref not in bom_refs:
                 continue
             rot = float(r["Rot"])
-            for pat, add in ROT:
-                if re.search(pat, r["Package"]):
-                    rot += add
-                    break
+            lc = ref_lcsc.get(ref, "")
+            if lc in ROT:
+                rot += ROT[lc]
+            elif not re.match(r"^[RC]\d", ref):
+                unknown.add(ref)
             rows.append([ref, "%.4fmm" % float(r["PosX"]), "%.4fmm" % float(r["PosY"]),
                          "Top" if r["Side"] == "top" else "Bottom", "%g" % (rot % 360)])
     os.remove(pos)
@@ -99,6 +101,8 @@ def main():
     print("BOM %d行 / 部品%d個、CPL %d個" % (len(groups), len(bom_refs), len(rows)))
     if missing:
         print("LCSC番号なし:", ",".join(sorted(missing, key=key)))
+    if unknown:
+        print("回転の補正が未照合（JLCのプレビューで要確認）:", ",".join(sorted(unknown, key=key)))
     if no_pos:
         print("CPLに無い（基板に無い）:", ",".join(no_pos))
 
