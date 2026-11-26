@@ -434,11 +434,10 @@ for k, ph in enumerate("ABC"):
     # 入力コンデンサは上FETドレイン〜シャントのGND端の間に置く (スイッチングループを最小に)
     C(B, "100nF 100V", "VBUS~" + ph, "GND~" + ph, (ox + 60, oy - 17), fp="C0805")
     C(B, "2.2uF 100V", "VBUS~" + ph, "GND~" + ph, (ox + 78, oy - 17), fp="C1210")
-    # スナバは未実装パッド。試作で跳ねを見て実装する (下FETの直近に置く)
-    comp(B, "R", "Device:R", "2.2", {"1": "PHASE_" + ph, "2": "SNUB_" + ph}, (ox + 112, oy + 12),
-         0, "Resistor_SMD:R_1206_3216Metric", in_bom=False, dnp=True)
-    comp(B, "C", "Device:C", "2.2nF 100V", {"1": "SNUB_" + ph, "2": "GND"}, (ox + 112, oy + 28),
-         0, "C0603", in_bom=False, dnp=True)
+    # スナバ（2.2Ω＋2.2nF、裏面の未実装パッド）は2026-11-26に削除。裏面に部品を置かない方針で、シミュでも効果がほぼ無い
+    # （VDSの跳ね31.6V対31.3V）。部品番号がずれないよう欠番にする（R12/14/16、C21/24/27）
+    _counts["R"] += 1
+    _counts["C"] += 1
     tie(B, "VBUS~" + ph, (ox + 92, oy - 24))
     tie(B, "GND~" + ph, (ox + 40.54, oy + 42))
 block("FET温度検出 (NTCはFET近傍に配置)")
@@ -582,10 +581,11 @@ for k, ph in enumerate("ABC"):
     # 検出線はシャントのパッドから引く (ネットタイはシャントの直近に置く)
     nettie(B, "SP_" + ph, "SHUNT_" + ph, (ox + 18, oy + 27))
     nettie(B, "SN_" + ph, "GND~" + ph, (ox + 18, oy + 37))
-    # 上FETドレイン〜下FETソース (シャントを通らない経路)。裏面なので未実装（付けるなら手はんだ）。
-    # PGND基準に直したシミュ(2026-11-26)でSPxが未実装だと-3.3V(寄生2倍で-6.3V)、付けると-0.6V(-0.9V)。絶対最大は200nsで-3V
+    # 上FETドレイン〜下FETソース (シャントを通らない経路)。表面に実装（Extendedなので手はんだ）。
+    # PGND基準に直したシミュ(2026-11-26)でSPxが無いと-3.3V(寄生2倍で-6.3V)。配線の誘導分3nHで-1.6V(-2.0V)、5nHで-2.1V(-2.9V)。
+    # 絶対最大は200nsで-3V。FETの真下(裏面)なら1nHで-0.6Vだが、裏面に部品を置かない方針で表面の左横へ
     comp(B, "C", "Device:C", "1uF 100V", {"1": "VBUS~" + ph, "2": "SHUNT_" + ph},
-         (ox + 75, oy + 24), 0, "C1206", in_bom=False, dnp=True)
+         (ox + 75, oy + 24), 0, "C1206")
     tp(B, "GH" + ph, "GATE_%sH" % ph, (ox + 18, oy - 14))
     tp(B, "GL" + ph, "GATE_%sL" % ph, (ox + 18, oy + 10))
     tp(B, "SH" + ph, "PHASE_" + ph, (ox + 97, oy - 4))

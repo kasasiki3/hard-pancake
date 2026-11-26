@@ -2,7 +2,7 @@
 	(version 20231120)
 	(generator "eeschema")
 	(generator_version "8.0")
-	(uuid "362e47d8-556a-4337-8c0d-58ccc6ee1e4a")
+	(uuid "f69b6315-034e-4a40-9c7c-9b4569ff9c5f")
 	(paper "A4")
 	(title_block
 		(title "固いパンケーキ モータードライバ")
@@ -24,7 +24,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "bea6b21d-11a1-46cb-b40c-f766d067c78e")
+		(uuid "c669d63e-f7fb-444b-97cf-5f9489279690")
 		(property "Sheetname" "電源"
 			(at 25.4 39.94 0)
 			(effects
@@ -45,7 +45,7 @@
 		)
 		(pin "VBUS_SENSE" output
 			(at 76.2 45.72 0)
-			(uuid "d939b6c2-1c02-4502-86b5-b5b753f8784e")
+			(uuid "ae030ada-b9ca-406e-9b2b-cf0982797881")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -55,7 +55,7 @@
 		)
 		(pin "SWD_5V" input
 			(at 76.2 48.26 0)
-			(uuid "d1e49e2c-d70f-4627-af6a-e420deac3545")
+			(uuid "0a3455f8-1354-41cc-a1e0-7745bc1d8b51")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -65,7 +65,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/362e47d8-556a-4337-8c0d-58ccc6ee1e4a"
+				(path "/f69b6315-034e-4a40-9c7c-9b4569ff9c5f"
 					(page "2")
 				)
 			)
@@ -86,7 +86,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "c0ee9da4-aeb5-4b55-8965-056a7bb2bdff")
+		(uuid "718fece6-74c4-4454-836c-a0bb097702ca")
 		(property "Sheetname" "制御 (MCU・CAN・エンコーダ)"
 			(at 101.6 39.94 0)
 			(effects
@@ -107,7 +107,7 @@
 		)
 		(pin "VBUS_SENSE" input
 			(at 101.6 45.72 180)
-			(uuid "3465e7d6-997f-4cf9-a902-694f1a62313d")
+			(uuid "b5054081-50a5-4a98-a2a6-9a8e63d90341")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -117,7 +117,7 @@
 		)
 		(pin "SWD_5V" output
 			(at 101.6 48.26 180)
-			(uuid "d8ba8928-be6a-4aa5-9fe8-4fb3933c7934")
+			(uuid "b41f193b-89d3-455b-9fac-a43abbe3483c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -127,7 +127,7 @@
 		)
 		(pin "PWM_AH" output
 			(at 152.4 45.72 0)
-			(uuid "98c04166-5fc5-4511-b184-06a443c85b18")
+			(uuid "8f7b7e94-cf71-4b91-a008-0eb93b7555c8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -137,7 +137,7 @@
 		)
 		(pin "PWM_AL" output
 			(at 152.4 48.26 0)
-			(uuid "7acd96a7-307a-4c7b-8241-6aa2767c7570")
+			(uuid "ca7a316a-7a3d-41b3-956e-4c643e28dcd2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -147,7 +147,7 @@
 		)
 		(pin "PWM_BH" output
 			(at 152.4 50.8 0)
-			(uuid "b398614a-56b5-4de8-9f03-25c1f4992d5f")
+			(uuid "1924ef7e-6e63-490e-b685-34174ce85934")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -157,7 +157,7 @@
 		)
 		(pin "PWM_BL" output
 			(at 152.4 53.34 0)
-			(uuid "f4b7e0ac-abf1-40fc-a7da-585e5623a348")
+			(uuid "ad8105e3-c77e-494e-a41b-37d1b20f2ec2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -167,7 +167,7 @@
 		)
 		(pin "PWM_CH" output
 			(at 152.4 55.88 0)
-			(uuid "1575e7c1-50a9-4e71-8ac1-aef776d72d72")
+			(uuid "4c1bef82-06af-46d9-8184-4e7f9ae43b1e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -177,7 +177,7 @@
 		)
 		(pin "PWM_CL" output
 			(at 152.4 58.42 0)
-			(uuid "5e2548e1-ce11-4630-a638-6b72e389ce7f")
+			(uuid "b15860b2-55e4-40ee-9ba8-2c30b4707bc5")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -187,7 +187,7 @@
 		)
 		(pin "DRV_EN" output
 			(at 152.4 60.96 0)
-			(uuid "a34261de-4c54-41b3-96d3-7b01926823a7")
+			(uuid "07bd197c-405b-484d-b706-63c12a91022e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -197,7 +197,7 @@
 		)
 		(pin "DRV_CAL" output
 			(at 152.4 63.5 0)
-			(uuid "2db33702-e985-40e4-883d-db2378de4273")
+			(uuid "7ba719ea-19d8-43f8-89a7-864f69159c2d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -207,7 +207,7 @@
 		)
 		(pin "DRV_NFAULT" input
 			(at 152.4 66.04 0)
-			(uuid "745459b2-b73a-4835-84ff-629d1455cc6b")
+			(uuid "77d26fdd-e03b-4ffc-b083-cd783f54a168")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -217,7 +217,7 @@
 		)
 		(pin "ISENSE_A" input
 			(at 152.4 68.58 0)
-			(uuid "1223b023-b0bd-442a-8eb4-ba794be5e81d")
+			(uuid "f02701b0-a63b-4c24-bb69-8116da883ef0")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -227,7 +227,7 @@
 		)
 		(pin "ISENSE_B" input
 			(at 152.4 71.12 0)
-			(uuid "4c87b30d-0258-4606-806d-3524849e9f5d")
+			(uuid "a9aafae9-43ab-4785-82f7-77ef6ffc3846")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -237,7 +237,7 @@
 		)
 		(pin "ISENSE_C" input
 			(at 152.4 73.66 0)
-			(uuid "76962603-3eef-4bb3-81da-4fcd1f07bcc6")
+			(uuid "3b6a7c20-39f3-4a80-9d7a-f646acd520b5")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -247,7 +247,7 @@
 		)
 		(pin "NTC_SENSE" input
 			(at 152.4 76.2 0)
-			(uuid "9e6068ff-bdb7-41c9-9f66-6dd8d1cc4bb4")
+			(uuid "a13de04e-79e6-46ed-9030-e940f891a73f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -257,7 +257,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/362e47d8-556a-4337-8c0d-58ccc6ee1e4a"
+				(path "/f69b6315-034e-4a40-9c7c-9b4569ff9c5f"
 					(page "3")
 				)
 			)
@@ -278,7 +278,7 @@
 		(fill
 			(color 0 0 0 0)
 		)
-		(uuid "62004b37-64eb-41ce-a88d-ab202b3ef8ff")
+		(uuid "a5c49cd7-02ff-466f-a469-2081a7fee362")
 		(property "Sheetname" "パワー段"
 			(at 177.8 39.94 0)
 			(effects
@@ -299,7 +299,7 @@
 		)
 		(pin "PWM_AH" input
 			(at 177.8 45.72 180)
-			(uuid "d6d989b5-e5d5-40e8-9dcb-da22705bb07f")
+			(uuid "e556af03-50d0-405b-84c9-2eb0d2e67c52")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -309,7 +309,7 @@
 		)
 		(pin "PWM_AL" input
 			(at 177.8 48.26 180)
-			(uuid "3fe0ff55-2328-42d6-b4bf-a27f4d383f82")
+			(uuid "d98550ec-1a36-41c3-90f0-862e6ee0cc71")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -319,7 +319,7 @@
 		)
 		(pin "PWM_BH" input
 			(at 177.8 50.8 180)
-			(uuid "afca6f83-37ec-48ce-8353-13d24fc3c302")
+			(uuid "18141790-c1a4-4d3c-a054-3dde9ea339d5")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -329,7 +329,7 @@
 		)
 		(pin "PWM_BL" input
 			(at 177.8 53.34 180)
-			(uuid "ad898bbf-ce64-4ef7-9054-84264ed3dec1")
+			(uuid "32856933-a8e8-48e1-b50c-423ec6f5d627")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -339,7 +339,7 @@
 		)
 		(pin "PWM_CH" input
 			(at 177.8 55.88 180)
-			(uuid "b2b22603-77c2-4926-a10b-aa6cf9a7f021")
+			(uuid "3a6e84fb-49cb-4c80-b657-8ec5fb18da01")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -349,7 +349,7 @@
 		)
 		(pin "PWM_CL" input
 			(at 177.8 58.42 180)
-			(uuid "134f132f-08c8-4ad7-9aab-971428ce5908")
+			(uuid "7c4b4767-ecfe-4563-81b2-b8381c9b0723")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -359,7 +359,7 @@
 		)
 		(pin "DRV_EN" input
 			(at 177.8 60.96 180)
-			(uuid "d90c97ba-c359-43c0-828c-72ab97df8f7e")
+			(uuid "6a7febf9-fcbb-4555-aa0f-d7750e0a2824")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -369,7 +369,7 @@
 		)
 		(pin "DRV_CAL" input
 			(at 177.8 63.5 180)
-			(uuid "b241fe9f-e7bb-4541-81f9-ff5587c3cc62")
+			(uuid "b2a8995a-cfbf-4a59-be61-1fc80c3704c2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -379,7 +379,7 @@
 		)
 		(pin "DRV_NFAULT" output
 			(at 177.8 66.04 180)
-			(uuid "769fa068-0666-4999-8a00-bff2fc7c988b")
+			(uuid "8d6bde5e-6854-4876-b665-ab8f5135f011")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -389,7 +389,7 @@
 		)
 		(pin "ISENSE_A" output
 			(at 177.8 68.58 180)
-			(uuid "417addb8-cf68-42e9-aa1c-c0220c664b3b")
+			(uuid "f70e4935-264f-49ce-9c0c-d4367ec810fb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -399,7 +399,7 @@
 		)
 		(pin "ISENSE_B" output
 			(at 177.8 71.12 180)
-			(uuid "ef7d7502-21e0-48d6-98be-f13d87d300bd")
+			(uuid "b902e328-0213-4572-a77f-3f798b2e629c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -409,7 +409,7 @@
 		)
 		(pin "ISENSE_C" output
 			(at 177.8 73.66 180)
-			(uuid "589e4d52-abfe-4b5f-8066-9a18836789b5")
+			(uuid "b4c406b9-f6e2-409f-96d0-be4a3d5109c4")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -419,7 +419,7 @@
 		)
 		(pin "NTC_SENSE" output
 			(at 177.8 76.2 180)
-			(uuid "8a30296d-e919-448f-a38a-89bb8f516056")
+			(uuid "2ee7e403-078e-4fc4-aa88-e465fbd2ec5b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -429,7 +429,7 @@
 		)
 		(instances
 			(project "pancake"
-				(path "/362e47d8-556a-4337-8c0d-58ccc6ee1e4a"
+				(path "/f69b6315-034e-4a40-9c7c-9b4569ff9c5f"
 					(page "4")
 				)
 			)
@@ -444,7 +444,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "a9d46aee-6ac4-442d-8f28-306187796f08")
+		(uuid "1d2a7e78-dd14-4725-8cb9-37cba93e66d5")
 	)
 	(wire
 		(pts
@@ -455,7 +455,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "99f28647-7538-4120-bf54-0f66a55bf2fa")
+		(uuid "3fc8e9cf-24e4-43ef-91a3-4a67d2f1370e")
 	)
 	(wire
 		(pts
@@ -466,7 +466,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "4f1ed4b1-019d-482b-b1bf-355c406967d0")
+		(uuid "d402f14d-4be0-4fcb-ac73-4067c3079b79")
 	)
 	(wire
 		(pts
@@ -477,7 +477,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "12c0f8c6-52f2-40e9-95be-c84717ba7140")
+		(uuid "4c5881f7-f81f-472f-8c8b-2dcce977803f")
 	)
 	(wire
 		(pts
@@ -488,7 +488,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "217b1196-6a9e-42de-85c3-41d94bc0783f")
+		(uuid "b07b5fed-b1cc-4100-bfed-12ee8b2082e3")
 	)
 	(wire
 		(pts
@@ -499,7 +499,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "5129365b-7f65-45c0-b5a5-67141d414cb3")
+		(uuid "df54a1c5-6fc5-4f9d-96d6-597c61cf4cf3")
 	)
 	(wire
 		(pts
@@ -510,7 +510,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "8e2a3fe4-e89e-431b-8cfb-9c729286b3b5")
+		(uuid "c8386917-c73e-42f0-8d85-b3ac17bdcd55")
 	)
 	(wire
 		(pts
@@ -521,7 +521,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "01e588db-42f9-40af-bdac-dfe83ea47ada")
+		(uuid "e5927c49-2cf9-46eb-ba70-0696479b2e2b")
 	)
 	(wire
 		(pts
@@ -532,7 +532,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "00f7ce14-c39f-40c5-be08-290834dfeeb5")
+		(uuid "d8cc70f1-34f2-4bb4-8b18-d2a74e09d8f2")
 	)
 	(wire
 		(pts
@@ -543,7 +543,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "5b1c68f4-6fe3-47fe-be26-c8f78fadb851")
+		(uuid "ae837bd0-f403-4a90-8f70-5e7241151a83")
 	)
 	(wire
 		(pts
@@ -554,7 +554,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "97f43934-e3c2-4510-b3f8-3d0bb3f0759b")
+		(uuid "d779d886-25ec-4580-a213-afe816260945")
 	)
 	(wire
 		(pts
@@ -565,7 +565,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "997a8e5b-2d07-43af-8d38-13fe86a64107")
+		(uuid "42745067-6762-41e0-9448-6e9359acb6dc")
 	)
 	(wire
 		(pts
@@ -576,7 +576,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "e9161406-869f-424e-84ba-e803f5189494")
+		(uuid "068df341-b384-4202-a143-4f312828628a")
 	)
 	(wire
 		(pts
@@ -587,7 +587,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "c3e5e2ba-38f9-4bf4-a0a4-fd5fc360a28d")
+		(uuid "8ff46ac1-6d49-410a-b64e-60fc649e48f3")
 	)
 	(wire
 		(pts
@@ -598,7 +598,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "1e45d8ed-95b9-4156-b1f4-4ac8a95fb320")
+		(uuid "63d37e44-a351-46fd-b9d5-132eddae4dd4")
 	)
 	(sheet_instances
 		(path "/"
