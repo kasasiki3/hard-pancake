@@ -2,7 +2,8 @@
 
 実行: python tools/export_jlc.py   （KiCad 10 の kicad-cli を使う）
 - ガーバー・ドリルは zip にまとめる（JLCのPCB注文にそのまま上げる）
-- BOM は LCSC番号でまとめる。DNP・BOM除外（テストポイント・取付穴・モーターパッド・ネットタイ）は入れない
+- BOM は LCSC番号でまとめる。DNP・BOM除外（テストポイント・取付穴・モーターパッド・ネットタイ）は入れない。
+  手はんだの部品（HAND）はJLCのBOM・CPLから外し、pancake_bom_hand.csv に出す
 - CPL の回転は KiCad の値に、JLCとKiCadで基準が違うパッケージの補正を足したもの。補正表は
   kicad-jlcpcb-tools の既定表に倣った推定なので、発注画面の部品配置プレビューで極性・向きを必ず目で確かめる
 """
@@ -28,6 +29,11 @@ GBR = os.path.join(OUT, "gerber")
 ROT = {"C46528099": 180, "C113998": 180, "C37704": 180, "C2481": 0, "C2286": 180, "C246766": 180, "C225449": 180,
        "C157991": 180, "C157993": 180, "C385834": 180, "C83454": 0, "C145537": 90, "C318884": 0, "C47773": 270,
        "C543035": 0, "C529355": 270, "C558419": 90, "C22438481": 0, "C7836": 180, "C5308003": 180, "C98732": 0, "C13564": 0}
+# 手はんだする部品（JLCのBOM・CPLから外し、pancake_bom_hand.csv に出す）。コネクタと、手はんだできるExtended部品（2026-11-26 本人方針）。
+# Extendedでも JLC に残すのはリフローが要るもの: Q(SO-8FLの露出パッド)、U2(QFN)、U3(LQFP 0.5mm)、U6(LGA)、Y1(裏面電極)。BOM.md と対応させる
+HAND = {"C98732": "XT60", "C385834": "RJ45", "C157993": "JST PH", "C225449": "JST XA", "C46528099": "電解 10×10.5",
+        "C55151": "1210", "C710260": "2512", "C83454": "6×6インダクタ", "C113998": "SMB", "C2481": "SMA", "C246766": "SOT-23",
+        "C47773": "SOT-23-5", "C558419": "SOT-23-6", "C7836": "SOT-23-5", "C13564": "0603"}
 
 
 def run(*a):
@@ -66,11 +72,19 @@ def main():
         g = groups.setdefault((lcsc, val, fp), [])
         g.append(ref)
     key = lambda r: (re.sub(r"\d", "", r), int(re.sub(r"\D", "", r) or 0))
+    order = lambda t: key(sorted(t[1], key=key)[0])
+    hand = {k: v for k, v in groups.items() if k[0] in HAND}
+    groups = {k: v for k, v in groups.items() if k[0] not in HAND}
     with open(os.path.join(OUT, "pancake_bom_jlc.csv"), "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
         w.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
-        for (lcsc, val, fp), refs in sorted(groups.items(), key=lambda t: key(sorted(t[1], key=key)[0])):
+        for (lcsc, val, fp), refs in sorted(groups.items(), key=order):
             w.writerow([val, ",".join(sorted(refs, key=key)), fp, lcsc])
+    with open(os.path.join(OUT, "pancake_bom_hand.csv"), "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.writer(f)
+        w.writerow(["Comment", "Designator", "Qty", "Footprint", "LCSC Part #"])
+        for (lcsc, val, fp), refs in sorted(hand.items(), key=order):
+            w.writerow([val, ",".join(sorted(refs, key=key)), len(refs), fp, lcsc])
     bom_refs = {r for refs in groups.values() for r in refs}
     ref_lcsc = {r: k[0] for k, refs in groups.items() for r in refs}
 
@@ -98,7 +112,8 @@ def main():
         w.writerows(sorted(rows, key=lambda t: key(t[0])))
     no_pos = sorted(bom_refs - {r[0] for r in rows}, key=key)
     print("gerber:", zp)
-    print("BOM %d行 / 部品%d個、CPL %d個" % (len(groups), len(bom_refs), len(rows)))
+    print("JLC: BOM %d行 / 部品%d個、CPL %d個。手はんだ: %d行 / %d個" % (
+        len(groups), len(bom_refs), len(rows), len(hand), sum(len(v) for v in hand.values())))
     if missing:
         print("LCSC番号なし:", ",".join(sorted(missing, key=key)))
     if unknown:
