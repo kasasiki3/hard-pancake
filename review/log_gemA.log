@@ -1,0 +1,32 @@
+モデル名: Gemini 4 Carbon (High)
+
+まず仕様・決定事項（[readme.md](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/%E5%9B%BA%E3%81%84%E3%83%91%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD/readme.md)）や前回の設計チェック、BOM、ネットリスト、部品配置、DRCレポート、およびディレクトリ内のファイル一覧を一括で読み込みます。
+仕様書、ネットリスト、部品配置、DRCレポートの読み込みが完了しました。続いて回路図・各層銅箔画像、基板生成・検証スクリプト、およびLTspiceシミュレーションスクリプトを一括で読み込み、詳細な照合に進みます。
+回路図4枚、基板各層（F.Cu / In1.Cu / In2.Cu / B.Cu / F.Fab）の画像、およびシミュレーション・解析スクリプトを確認しました。続いて各IC・MOSFETのデータシート、基板生成・配線スクリプト、[bom_lookup.json](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/%E5%9B%BA%E3%81%84%E3%83%91%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD/bom_lookup.json)、DRCルールファイルを読み込み、ピン定義・定格・フットプリント寸法を照合します。
+MOSFETおよびCA-IS2062Aのデータシート、基板生成・自動配線スクリプトを確認しました。続いてDRV8323R・電解コンデンサ・STM32のデータシート、自作フットプリント一式、回路図生成スクリプトを読み込み、全ピン機能・定格・ランド寸法の突き合わせを進めます。
+DRV8323Rのデータシート全ページおよび自作フットプリント群の確認を完了しました。続いて電解コンデンサのデータシートを確認するとともに、KiCad 10のライブラリからSTM32G431CBT6の全ピン機能・各フットプリントのピン配置を抽出し、LTspiceの全実行ログも集計します。
+全観点の回路・基板・シミュレーション・製造性査読を完了し、`review/findings_gemA.md` を作成しました。最後に他ファイルへの変更がないことと出力ファイルの先頭・末尾を検証し、最終報告をまとめます。
+モデルID: Gemini 4 Carbon (High)
+
+BLDCモータードライバ「固いパンケーキ」の回路・基板・シミュレーション・製造性（JLCPCB PCBA）の全観点査読を完了し、結果を [findings_gemA.md](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/review/findings_gemA.md) に出力しました（他ファイルへの変更はありません）。
+
+### 結論・要約
+
+- **致命（1件）**:
+  - **[F-01]** [export_jlc.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/tools/export_jlc.py#L25) のSOT-23系回転補正角が `180°`（正しくは `-90°` / `270°`）となっており、[pancake_cpl_jlc.csv](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/kicad/production/pancake_cpl_jlc.csv) で `D2, D6, U1, U4, U5` の5部品が90°横向きにずれています。またモーター直付けパッド `J2–J4` が [pancake_bom_jlc.csv](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/kicad/production/pancake_bom_jlc.csv#L22-L24) に混入しています。
+- **重大（8件）**:
+  - **[F-02]** [bridge_sim.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/sim/bridge_sim.py#L46) でローサイドドライバ基準が `PGND`（`0`）ではなくシャント上側 `sp` に接続されており、`dI/dt` によるゲート浮き／負サージが打ち消されています（併せて `Cjo=9.5n` の過大設定・ゲート配線インダクタンス過小設定あり）。
+  - **[F-03]** `CA-IS2062A`（`U6`）で `VDDL` デカップリング `C40` がビア2個経由で内層接続されているほか、`GNDP1–GND1` / `GND2–GNDP2` のF.Cu直結欠落およびデカップリング距離2mm超過があり、データシートのレイアウト規定に違反しています。
+  - **[F-04]** `B.Cu` のゲート線6本・シャントケルビン線6本の直上 `In2.Cu`（0.21mm厚プリプレグ越し）が `GND` でなく `VBUS` プレーンになっており、`SPC`↔`GLC`（0.27mm間隔・約20mm並走）等のクロストーク懸念があります。
+  - **[F-05]** 電解コンデンサ `118EC447`（`C1–C3`）はPWM周波数帯の補正係数 `0.70` により3個合計許容リプルが `4.2Arms` ではなく `2.94Arms` となり、連続8A運転時はディレーティング不足です。
+  - **[F-06]** `DRV8323RH` 降圧入力の `C13`（`10µF 50V 1206`）のみTVS最大クランプ `48.4V` に対して50V耐圧のまま残っています。
+  - **[F-07]** `U2` の `VM` バイパス `C12` が4.08mm離れ幅 `0.28mm` 細線接続となっており、5V降圧の `C14/D3` GNDと `C18` GNDが約13〜16mm離れてMCUアナログGND近傍へ多点接地されています。
+  - **[F-08]** `U2` サーマルパッド内21穴が裏面マスク開口のPTHパッド（はんだ吸い上がり懸念）、JLCPCB標準4層の内層 `0.5oz` デフォルト問題、`J1.1 (VBUS)` 入口ビア4本のみのボトルネックがあります。
+  - **[F-09]** [pancake_bom_jlc.csv](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/kicad/production/pancake_bom_jlc.csv) 全45行中20行でLCSC番号が空欄です（MOSFET `C145537` 等）。
+- **軽微（3件）・確認要（2件）・問題なし／未確認の整理**:
+  - `NTC_SENSE` のMCU端100nF欠落（[F-10]）、[buck2.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/sim/buck2.py) 等の回生35V・短絡遮断条件未検証（[F-11]）、DRCシルク重なり27件（[F-12]）、`STM32G431` の `PA4`（DAC1内部出力＋TIM3_CH2共用）の実機確認および `R2=4.3kΩ` によるDAC不使用回避策（[F-13]）、自作コネクタ外形・水晶負荷容量・原本PDF未収録による未確認項目（[F-14]）を事実・推測・未確認に分けて記載しています。
+
+詳細は [findings_gemA.md](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/review/findings_gemA.md) を参照してください。
+
+=== CODEX DONE (exit 0) ===
+=== CODEX DONE (exit 0) model=gemini-4-carbon-high out=review/log_gemA.log ===

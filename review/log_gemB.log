@@ -1,0 +1,35 @@
+モデル: Gemini 4 Carbon (High)
+
+BLDCモータードライバ「固いパンケーキ」の回路・基板・シミュレーション・製造性（JLCPCB）の査読を開始します。まず `readme.md` やネットリスト、BOM、配置データ、ディレクトリ内のデータシート・スクリプト類を一括で確認します。
+仕様書・ネットリスト・DRCレポートの読み込みが完了しました。続いて回路図・各層レイアウト画像および `sim/`・`tools/` のシミュレーション・基板生成スクリプトを一括で読み込み、視覚的・数値的な照合を行います。
+回路図・基板レイアウト画像と生成スクリプトの読み込みが完了しました。次に `datasheet/` 内の各データシート、`kicad/pancake.pretty` 内の自作フットプリント、`tools/gen_sch.py`、およびLTspiceの全実行ログを読み込んでピン単位・数値単位で照合します。
+続いて電解コンデンサのデータシート、`bom_lookup.json`、LTspiceの全ログ数値、`pancake.kicad_pcb` の全パッド座標・配線経路の幾何解析、およびSTM32G431（DS12589/RM0440）やLCSC部品仕様の裏取りを並列で実行します。
+続いて、RJ45（C385834）のピン配列図面、RT9013-33GBのピン配置、STM32G431のDAC内部接続仕様・エラッタ（ES0431）のWeb検索と、基板データ（`pancake.kicad_pcb` / `geo.json` / `routes.json`）の詳細な幾何・配線検査スクリプトを並列実行します。
+RJ45コネクタ（`R-RJ45R08P-A004` / `C385834`）のラッチ向き（Tab-Up / Tab-Down）とPCBレイアウト図の視点（Top/Bottom View）をWeb検索で裏取りしつつ、基板データの配線・クリアランス・ビア検査スクリプト（1行コマンド）を実行します。
+続いて、`118EC447`・`C145537` のLCSC/JLCPCB取扱い状況の確認と、基板上のパワー段（シャントのケルビン接続・FET放熱ビア・DRV8323周辺配線・MCUパスコン配置）およびLTspice全ログの詳細解析スクリプトを並列実行します。
+KiCad 10インストール済みの標準フットプリントライブラリ（RJ45・SMB・電解・QFN等）と照合してピン配列・極性を確定させるとともに、基板全体のクリアランス（絶縁距離を含む）、差動センス線（SPx/SNx）のペア乖離、DRV8323パスコンの配線長、パワー段のビア数を一括計測します。
+KiCad標準ライブラリのフットプリント定義（RJ45・SMB・電解・QFN）を直接読み込み、ピン番号と座標・極性・サーマルパッド構造を確定させます。あわせてパワー段（FET・シャント・バルクコンデンサ）のビア数およびLDO/MCU電源ピンの引き出し配線を検証します。
+KiCad標準ライブラリの同形状RJ45（1.02mmピッチ千鳥配置品）およびSO-8FLフットプリントを読み込んで最終確認するとともに、LTspiceの `.raw` 波形データから未測定だった `V(sp)` の負側ピーク値を直接抽出し、基板の電流ボトルネック幅やサーマルパッド構造を確認します。
+KiCad標準ライブラリのTab-Down型RJ45フットプリントおよびSO-8FLフットプリントを読み込み、`R-RJ45R08P-A004` のラッチ向き・ピン1位置を確定させます。同時に、LTspice波形のスルーレート・負サージ継続時間と、基板上のFETパッド下ビア・コネクタ端面位置を最終計測します。
+`ZP5JA88-1`（`R-RJ45R08P-A004` の図面型番）のラッチ向き・ピン配列と、STM32G431のUCPDピン（PB4/PB6）およびDAC3/COMP入力マッピングの最終裏取りを行います。
+すべてのデータシート・フットプリント・基板座標・LTspice波形バイナリの検証が完了しました。査読結果を重大度順に整理し、`review/findings_gemB.md` へ出力します。
+`review/findings_gemB.md` の書き込みと他ファイルへの変更がないことを最終確認します。
+モデル: Gemini 4 Carbon (High)
+
+BLDCモータードライバ「固いパンケーキ」の回路・基板レイアウト・シミュレーション・JLCPCB製造性に関する全査読を完了し、結果を [findings_gemB.md](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/review/findings_gemB.md) に出力しました（他のファイルは一切変更していません）。
+
+### 主な検出事項（要約）
+1. **【致命／確認要】RJ45（`J8`・`J9`、`C385834`）自作フットプリントのピン順反転リスク**: 現在の [gen_fp.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/tools/gen_fp.py#L28-L32) は差込口 `+Y` に対して右端を1番としており、Tab-Up（上扣）専用の並びになっています。実物が標準的な Tab-Down（下扣）品（図面がBottom View表記）であった場合、1〜8番が完全逆転し CAN1H/L が `GND_ISO` に短絡して通信不能になります。EasyEDAの `C385834` 正規データとの照合が必須です。
+2. **【致命／重大】ローサイド `SPx` 負サージの絶対最大定格超過と `IDRIVE=75kΩ` 変更候補の危険性**: [bridge_sim.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/sim/bridge_sim.py#L64) が `MAX V(sp)` のみ測定し `MIN V(sp)` を見落としていました。`.raw` 波形を直接解析した結果、`C45〜C47` 未実装では公称条件（30A）で `sp_min = -3.37V`、寄生2倍で `-6.37V` と DRV8323RH の定格（`±3V`）を超過しています（`C45〜C47` 実装で `-1.63V` / 2倍 `-2.01V` に収束するため標準実装を推奨）。また [readme.md](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/readme.md#L42) 記載の `IDRIVE=75kΩ（60/120mA）` では `SHx = -11.70V`・`SPx = -10.30V/+6.29V` に達しICを破壊するため引き上げ不可です。
+3. **【重大】`CA-IS2062A`（`U6`）および `DRV8323 VREF`・`LDO`・`MCU VDDA/VREF+` のパスコンが全て幅 0.2mm 線＋個別ビア経由接続**: [route_pcb.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/tools/route_pcb.py#L244-L258) がプレーンネットを個別ビア落しにしたため、`CA-IS2062A` データシート（p.19–20）が明確に禁止する「ビア経由の別層接続」および 2mm 距離超過（最大 4.02mm）が発生しています。`U2.26 (VREF)`–`C11` や `U1.5 (+3V3)`–`C5` も F.Cu 上の直結が必要です。
+4. **【重大】パワー段・保護・シミュ・製造性の要修正点**:
+   - `Q1`〜`Q6` のドレイン露出パッド内のサーマルビアが 0本（SLVA959違反）。
+   - `SPC`/`SNC` 等の差動センス線が `y < 39mm` の自動配線区間で最大 `2.12mm` 乖離・6回ビア遷移。
+   - 3相 `COMP1/2/4` が片極性のため、1相吐き出し・2相半量吸い込み位相で最大約 68A まで COMP が効かない死角（ADC アナログウォッチドッグの上下限監視→`TIM1` ハードブレーク併用で解消可能）。
+   - [bridge_sim.py](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/sim/bridge_sim.py#L46) のローサイドドライバリターン先が `PGND (0)` ではなく `sp` になっている誤り、および `Vto=2.1`（高温下限は `0.7V`）による誤点弧の過小評価。
+   - JLCPCB PCBA における実装部品18品種の LCSC 番号未設定、基板右端 `0.75mm`（`U4`, `R21`）による工藝辺（Edge Rails）必須化、`U2` サーマルパッド内 φ0.3mm 未充填ビアのはんだ吸い上がり。
+
+詳細は [findings_gemB.md](file:///C:/Users/user/Documents/hard%20pancakes%20motor%20driver/固いパンケーキ/review/findings_gemB.md) を参照してください。
+
+=== CODEX DONE (exit 0) ===
+=== CODEX DONE (exit 0) model=gemini-4-carbon-high out=review/log_gemB.log ===

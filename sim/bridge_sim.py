@@ -1,11 +1,16 @@
-"""ハーフブリッジ＋寄生のLTspiceバッチ。FETはデータシート値から作った近似VDMOS、DRV8323は電流制限の近似。"""
+"""ハーフブリッジ＋寄生のLTspiceバッチ。FETはデータシート値から作った近似VDMOS、DRV8323は電流制限の近似。
+
+低側ドライバのシンクはPGND（データシート表6-4「PGND: gate drive sink path for the low side MOSFETs」）。
+PGNDはGNDプレーン経由でシャントのGND端につながるので、ノード0からLPG(DRVまでのGND配線)を介した pg を基準にする。
+2026-11-26 修正前は SP 基準で、シャントとGND戻りの誘導分がゲートループから抜けていた。"""
 import os, re, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 LT = os.path.expandvars(r"%LOCALAPPDATA%\Programs\ADI\LTspice\LTspice.exe")
 OUT = os.path.join(HERE, "run")
 os.makedirs(OUT, exist_ok=True)
 NET = """* half bridge
-.param LPK=0.3n LCAP={lcap} LD={ld} LSW={lsw} LSH={lsh} LRET={lret} LGH={lgh} LGL={lgl} IS={isrc} IK={isnk} IL={il} VB={vb}
+* LPG: PGND〜GNDプレーン〜シャントGND端の誘導分
+.param LPG={lpg} LPK=0.3n LCAP={lcap} LD={ld} LSW={lsw} LSH={lsh} LRET={lret} LGH={lgh} LGL={lgl} IS={isrc} IK={isnk} IL={il} VB={vb}
 Vb bat 0 {{VB}}
 Rb bat b1 10m
 Lb b1 vb 1u Rpar=100
@@ -42,13 +47,14 @@ Rgh gha ghi 1.2
 Lgl gl00 gla {{LGL}} Rpar=100
 Rgl gla gli 1.2
 * driver: source IS / sink IK; off side held by 2A strong pulldown while other side on. return = own source trace
-Bgh sw gh0 I=limit(1*(V(ch)*10.5-V(gh0,sw)), -(IK+V(cl)*2), IS)
-Bgl sp gl00 I=limit(1*(V(cl)*10.5-V(gl00,sp)), -(IK+V(ch)*2), IS)
+Bgh sw gh0 I=limit(4*(V(ch)*10.5-V(gh0,sw)), -(IK+V(cl)*2), IS)
+Lpg pg 0 {{LPG}} Rpar=100
+Bgl pg gl00 I=limit(4*(V(cl)*10.5-V(gl00,pg)), -(IK+V(ch)*2), IS)
 Vch ch 0 PULSE(0 1 {th} 5n 5n {ton} 100u)
 Vcl cl 0 PULSE({cl0} {cl1} {tl} 5n 5n {toff} 100u)
 Iload {ldir} 
 Cp sw 0 100p
-.model FET VDMOS(Rg=0 Vto=2.1 Kp=121 Rd=1.4m Rs=0.4m Rb=1.5m Cgdmax=0.9n Cgdmin=0.028n A=1.2 Cgs=3.55n Cjo=9.5n M=0.5 VJ=0.8 Is=1p TT={tt} BV=66 Ibv=1m Rds=10Meg)
+.model FET VDMOS(Rg=0 Vto={vto} Kp=121 Rd=1.4m Rs=0.4m Rb=1.5m Cgdmax=0.9n Cgdmin=0.028n A=1.2 Cgs=3.55n Cjo=9.5n M=0.5 VJ=0.8 Is=1p TT={tt} BV=66 Ibv=1m Rds=10Meg)
 .options reltol=2e-3 abstol=1e-6 vntol=1e-4 cshunt=1e-15
 .tran 0 12u 0 1n
 .meas TRAN vdsl_pk MAX V(dli,sli) FROM 1u TO 12u
@@ -62,13 +68,18 @@ Cp sw 0 100p
 .meas TRAN vb_pk MAX V(vb) FROM 1u TO 12u
 .meas TRAN vb_min MIN V(vb) FROM 1u TO 12u
 .meas TRAN sh_pk MAX V(sp) FROM 1u TO 12u
+.meas TRAN sp_min MIN V(sp) FROM 1u TO 12u
+.meas TRAN sw_minl MIN V(sw) FROM 1u TO 12u
+.meas TRAN gl_min MIN V(gl00,pg) FROM 1u TO 12u
+.meas TRAN idl_pk MAX I(Lld) FROM {b0} TO {b1}
+.meas TRAN gl_bumpx MAX V(gli,sli) FROM {b0} TO {b1}
 .end
 """
 
 
 def run(name, **k):
     d = dict(lcap="0.35n", ld="1n", lsw=".6n", lsh="1.8n", lret=".8n", lgh="24n", lgl="20n", isrc="30m", isnk="60m", il=30, vb=25.2,
-             lbulk="8n", rbulk="30m", lbulk2="10n", snub="", tt="15n", sign=1)
+             lbulk="8n", rbulk="30m", lbulk2="10n", snub="", tt="15n", sign=1, lpg="3n", vto=2.1)
     d.update(k)
     s = d.pop("sign")
     # 電流の向き: +はswから出る（LSダイオード転流）、-は入る（HSダイオード転流）

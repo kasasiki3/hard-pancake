@@ -280,6 +280,15 @@ LCSC = {
     ("5.6k", "R_0402_1005"): "C25908", ("10k", "R_0402_1005"): "C25744",
     ("18k", "R_0402_1005"): "C25762", ("100k", "R_0402_1005"): "C25741",
     ("LED", "LED_0603_1608"): "C2286", ("TS-1187A-B-A-B", None): "C318884",
+    # 値だけで決まるもの（2026-11-26 JLCの在庫で確認）
+    ("100uF 63V", None): "C46528099", ("SMBJ30A", None): "C113998", ("BAT54C", None): "C37704",
+    ("XT60PW-M", None): "C98732", ("RT9013-33GB", None): "C47773", ("ESDCAN24-2BLY", None): "C246766",
+    ("エンコーダ1", None): "C225449", ("エンコーダ2", None): "C225449", ("SWD", None): "C157993",
+    ("RJ45", None): "C385834", ("STM32G431CBT6", None): "C529355", ("USBLC6-4SC6", None): "C558419",
+    ("CA-IS2062A", None): "C22438481", ("8MHz", None): "C5308003", ("2.2uF 100V", None): "C55151",
+    ("SS16", None): "C2481", ("22uH", None): "C83454", ("NTMFS5C628NLT1G", None): "C145537",
+    ("0.5m", None): "C710260", ("10k NTC", None): "C13564", ("DRV8323RHRGZR", None): "C543035",
+    ("1uF 100V", "C_1206_3216"): "C13832", ("SN74LVC1G17", None): "C7836",
 }
 
 PAGES = {}    # page -> list of comps
@@ -420,7 +429,7 @@ for k, ph in enumerate("ABC"):
          0, "R2512", "RLM25FEGMR50M")
     comp(B, "J", "Connector_Generic:Conn_01x01", "モーター%s" % ph,
          {"1": "PHASE_" + ph}, (ox + 80, oy + 2), txt="right",
-         fp="pancake:MotorPad_6x6_moteus")
+         fp="pancake:MotorPad_6x6_moteus", in_bom=False)
     # 入力コンデンサは上FETドレイン〜シャントのGND端の間に置く (スイッチングループを最小に)
     C(B, "100nF 100V", "VBUS~" + ph, "GND~" + ph, (ox + 60, oy - 17), fp="C0805")
     C(B, "2.2uF 100V", "VBUS~" + ph, "GND~" + ph, (ox + 78, oy - 17), fp="C1210")
@@ -484,23 +493,23 @@ e1 = ["ENC1_Z", "ENC1_B", "ENC1_A"]
 for i, s_ in enumerate(e1):
     R(M, "100", s_, s_ + "_C", (135, 127 + 7.62 * i), 270)
 comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
-     {"5": "+3V3", "2": "GND", "1": "ENC1_A_C", "3": "ENC1_B_C", "4": "ENC1_Z_C", "6": NC},
+     {"5": "+5V", "2": "GND", "1": "ENC1_A_C", "3": "ENC1_B_C", "4": "ENC1_Z_C", "6": NC},
      (95, 112), 90, None, "TPUSBLC6-4SC6", txt="right")
-comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ1",
-     {"1": "+3V3", "2": "GND", "3": "ENC1_A_C", "4": "ENC1_B_C", "5": "ENC1_Z_C"},
-     (40, 140), 180, txt="left", fp="Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical")
+comp(M, "J", "Connector_Generic:Conn_01x06", "エンコーダ1",
+     {"1": "ENC1_VCC", "2": "GND", "3": "GND", "4": "ENC1_A_C", "5": "ENC1_B_C", "6": "ENC1_Z_C"},
+     (40, 140), 180, txt="left", fp="Connector_JST:JST_XA_B06B-XASK-1_1x06_P2.50mm_Vertical")
 
-block("エンコーダ2 (ABZ)")
+block("エンコーダ2 (ABZ、5V入力はSN74LVC1G17で3.3Vへ変換)")
 e2 = ["ENC2_B", "ENC2_Z", "ENC2_A"]
 for i, s in enumerate(e2):
-    R(M, "100", s, s + "_C", (295, 114.3 + 5.08 * i), 90)
+    R(M, "100", s + "_BUF", s + "_C", (312, 114.3 + 5.08 * i), 90)
 comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
-     {"5": "+3V3", "2": "GND", "1": "ENC2_B_C", "3": "ENC2_Z_C", "4": "ENC2_A_C", "6": NC},
-     (335, 97), 90, None, "TPUSBLC6-4SC6", txt="right")
-comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ2",
-     {"1": "+3V3", "2": "GND", "3": "ENC2_A_C", "4": "ENC2_B_C", "5": "ENC2_Z_C"},
-     (380, 119.38), 0, txt="right",
-     fp="Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical")
+     {"5": "+5V", "2": "GND", "1": "ENC2_B_C", "3": "ENC2_Z_C", "4": "ENC2_A_C", "6": NC},
+     (345, 97), 90, None, "TPUSBLC6-4SC6", txt="right")
+comp(M, "J", "Connector_Generic:Conn_01x06", "エンコーダ2",
+     {"1": "ENC2_VCC", "2": "GND", "3": "GND", "4": "ENC2_A_C", "5": "ENC2_B_C", "6": "ENC2_Z_C"},
+     (388, 119.38), 0, txt="right",
+     fp="Connector_JST:JST_XA_B06B-XASK-1_1x06_P2.50mm_Vertical")
 
 block("SWD (ST-Link V2互換品、5Vで給電も受ける)")
 comp(M, "J", "Connector_Generic:Conn_01x05", "SWD",
@@ -572,7 +581,8 @@ for k, ph in enumerate("ABC"):
     # 検出線はシャントのパッドから引く (ネットタイはシャントの直近に置く)
     nettie(B, "SP_" + ph, "SHUNT_" + ph, (ox + 18, oy + 27))
     nettie(B, "SN_" + ph, "GND~" + ph, (ox + 18, oy + 37))
-    # 上FETドレイン〜下FETソースの未実装パッド (シャントを通らない経路)
+    # 上FETドレイン〜下FETソース (シャントを通らない経路)。裏面なので未実装（付けるなら手はんだ）。
+    # PGND基準に直したシミュ(2026-11-26)でSPxが未実装だと-3.3V(寄生2倍で-6.3V)、付けると-0.6V(-0.9V)。絶対最大は200nsで-3V
     comp(B, "C", "Device:C", "1uF 100V", {"1": "VBUS~" + ph, "2": "SHUNT_" + ph},
          (ox + 75, oy + 24), 0, "C1206", in_bom=False, dnp=True)
     tp(B, "GH" + ph, "GATE_%sH" % ph, (ox + 18, oy - 14))
@@ -588,6 +598,20 @@ tp(B, "nFAULT", "DRV_NFAULT", (30, 150))
 block("テストポイント (電源)")
 for k, net in enumerate(("VBUS", "+5V", "+3V3", "GND", "GND")):
     tp(P, net, net, (262 + 16 * k, 125))
+# エンコーダ電源切替 (既定: ENC1=3.3V、ENC2=5V) と ENC2用5Vトレラントバッファ
+block("エンコーダ1 (ABZ または SSI: A=DO, B=CLK, Z=CSN)")
+comp(M, "JP", "Jumper:SolderJumper_3_Bridged12", "ENC1 3V/5V",
+     {"1": "+3V3", "2": "ENC1_VCC", "3": "+5V"}, (48, 116), 0,
+     "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm", in_bom=False, txt="above")
+block("エンコーダ2 (ABZ、5V入力はSN74LVC1G17で3.3Vへ変換)")
+comp(M, "JP", "Jumper:SolderJumper_3_Bridged12", "ENC2 5V/3V",
+     {"1": "+5V", "2": "ENC2_VCC", "3": "+3V3"}, (382, 95), 0,
+     "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm", in_bom=False, txt="above")
+for i, s in enumerate(e2):
+    comp(M, "U", "74xGxx:74LVC1G17", "SN74LVC1G17",
+         {"1": NC, "2": s + "_BUF", "3": "GND", "4": s, "5": "+3V3"},
+         (278, 64 + 35.56 * i), 180, "SOT23-5", "SN74LVC1G17DBVR")
+C(M, "100nF", "+3V3", "GND", (302, 64))
 
 SHEETS = [("power", "電源"), ("bridge", "パワー段"), ("ctrl", "制御 (MCU・CAN・エンコーダ)")]
 PAPER = {"power": ("A3", 420, 297), "bridge": ("A3", 420, 297), "ctrl": ("A3", 420, 297)}
@@ -965,7 +989,7 @@ class Sheet:
         if c["mpn"]:
             s.append(_prop("MPN", c["mpn"], X, Y, True))
         lcsc = LCSC.get((c["value"], (c["fp"] or "").split(":")[-1].removesuffix("Metric")),
-                        LCSC.get((c["mpn"], None)))
+                        LCSC.get((c["mpn"], None), LCSC.get((c["value"], None))))
         if lcsc and c["in_bom"]:
             s.append(_prop("LCSC", lcsc, X, Y, True))
         for p in pins:
