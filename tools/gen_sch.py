@@ -288,7 +288,7 @@ LCSC = {
     ("CA-IS2062A", None): "C22438481", ("8MHz", None): "C5308003", ("2.2uF 100V", None): "C55151",
     ("SS16", None): "C2481", ("22uH", None): "C83454", ("NTMFS5C628NLT1G", None): "C145537",
     ("0.5m", None): "C710260", ("10k NTC", None): "C13564", ("DRV8323RHRGZR", None): "C543035",
-    ("1uF 100V", "C_1206_3216"): "C13832", ("SN74LVC1G17", None): "C7836",
+    ("1uF 50V", "C_1206_3216"): "C1848", ("SN74LVC1G17", None): "C7836",
 }
 
 PAGES = {}    # page -> list of comps
@@ -581,10 +581,11 @@ for k, ph in enumerate("ABC"):
     # 検出線はシャントのパッドから引く (ネットタイはシャントの直近に置く)
     nettie(B, "SP_" + ph, "SHUNT_" + ph, (ox + 18, oy + 27))
     nettie(B, "SN_" + ph, "GND~" + ph, (ox + 18, oy + 37))
-    # 上FETドレイン〜下FETソース (シャントを通らない経路)。表面に実装（Extendedなので手はんだ）。
+    # 上FETドレイン〜下FETソース (シャントを通らない経路)。表面に実装。JLCの基本部品の 1µF 50V X7R 1206（C1848）。
+    # 耐圧は他と同じく50V（TVSのクランプ48.4V）。容量はほぼ効かず、25V時の実効0.3µFでも-1.3V（sim/run_c45C.py）
     # PGND基準に直したシミュ(2026-11-26)でSPxが無いと-3.3V(寄生2倍で-6.3V)。配線の誘導分3nHで-1.6V(-2.0V)、5nHで-2.1V(-2.9V)。
     # 絶対最大は200nsで-3V。FETの真下(裏面)なら1nHで-0.6Vだが、裏面に部品を置かない方針で表面の左横へ
-    comp(B, "C", "Device:C", "1uF 100V", {"1": "VBUS~" + ph, "2": "SHUNT_" + ph},
+    comp(B, "C", "Device:C", "1uF 50V", {"1": "VBUS~" + ph, "2": "SHUNT_" + ph},
          (ox + 75, oy + 24), 0, "C1206")
     tp(B, "GH" + ph, "GATE_%sH" % ph, (ox + 18, oy - 14))
     tp(B, "GL" + ph, "GATE_%sL" % ph, (ox + 18, oy + 10))
