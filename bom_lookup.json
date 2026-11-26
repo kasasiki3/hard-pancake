@@ -1,0 +1,1273 @@
+[
+  {
+    "bom": "STM32G431CBT6",
+    "qty": 1,
+    "best": {
+      "code": "C529355",
+      "model": "STM32G431CBT6",
+      "brand": "STMicroelectronics",
+      "pkg": "LQFP-48(7x7)",
+      "lib": "expand",
+      "pref": false,
+      "stock": 120,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          4.7753
+        ],
+        [
+          10,
+          4.1626
+        ],
+        [
+          30,
+          3.8497
+        ]
+      ],
+      "p1": 4.7753,
+      "type": "Microcontrollers (MCU/MPU/SOC)",
+      "mount": "Microcontrollers (MCU/MPU/SOC)",
+      "desc": "-40℃~+85℃ 1.71V~3.6V 128KB 12bit 12bit 170MHz 32 Bit 32KB 38 ARM Cortex-M4F Built-in FLASH LQFP-48(7x7) Microcontrollers (MCU/MPU/SOC) ROHS"
+    },
+    "count": 4
+  },
+  {
+    "bom": "NTMFS5C628NLT1G",
+    "qty": 6,
+    "best": {
+      "code": "C49108756",
+      "model": "NTMFS5C628NLT1G(ES)",
+      "brand": "ElecSuper",
+      "pkg": "PDFN-8L(5x6)",
+      "lib": "expand",
+      "pref": false,
+      "stock": 5901,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.539
+        ],
+        [
+          10,
+          0.4325
+        ],
+        [
+          30,
+          0.3801
+        ]
+      ],
+      "p1": 0.539,
+      "type": "MOSFETs",
+      "mount": "MOSFETs",
+      "desc": "1 N-channel 1.6V 1.9mΩ@10V、2.6mΩ@4.5V 102nC@10V 135pF 156W 190A 2.2nF 5.44nF 60V N-Channel PDFN-8L(5x6) MOSFETs ROHS"
+    },
+    "count": 5
+  },
+  {
+    "bom": "DRV8323RHRGZR",
+    "qty": 1,
+    "best": {
+      "code": "C543035",
+      "model": "DRV8323RHRGZR",
+      "brand": "Texas Instruments",
+      "pkg": "VQFN-48-EP(7x7)",
+      "lib": "expand",
+      "pref": false,
+      "stock": 1701,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          3.1994
+        ],
+        [
+          10,
+          2.744
+        ],
+        [
+          30,
+          2.4589
+        ]
+      ],
+      "p1": 3.1994,
+      "type": "Gate Drivers",
+      "mount": "Gate Drivers",
+      "desc": "-40℃~+125℃ 12uA 1A 2A 6V~60V Half-Bridge、Three Phase MOSFET Under Voltage Protection、Over Current Protection、Short Circuit Protection、Overtemperature protection (OTP) VQFN-48-EP(7x7) Gate Drivers ROHS"
+    },
+    "count": 1
+  },
+  {
+    "bom": "RT9013-33GB",
+    "qty": 1,
+    "best": {
+      "code": "C7434207",
+      "model": "RT9013-33GB-MS",
+      "brand": "MSKSEMI",
+      "pkg": "SOT-23-5",
+      "lib": "expand",
+      "pref": false,
+      "stock": 179821,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0585
+        ],
+        [
+          100,
+          0.0472
+        ],
+        [
+          300,
+          0.0415
+        ]
+      ],
+      "p1": 0.0585,
+      "type": "Voltage Regulators - Linear, Low Drop Out (LDO) Regulators",
+      "mount": "Voltage Regulators - Linear, Low Drop Out (LDO) Regulators",
+      "desc": "-40℃~+85℃ 1 100mV@(100mA)、300mV@(200mA) 3.3V 5.5V 500mA 50uVrms 60uA 75dB@(1kHz) Fixed Over Current Protection、Short Circuit Protection、Enable control Positive SOT-23-5 Voltage Regulators - Linear, Low Drop Out (LDO) Regulators ROHS"
+    },
+    "count": 7
+  },
+  {
+    "bom": "CA-IS2062A",
+    "qty": 1,
+    "best": {
+      "code": "C22438481",
+      "model": "CA-IS2062A",
+      "brand": "Chipanalog",
+      "pkg": "LGA-16(4.7x5.2)",
+      "lib": "expand",
+      "pref": false,
+      "stock": 11027,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          1.3712
+        ],
+        [
+          10,
+          1.2025
+        ],
+        [
+          30,
+          1.0436
+        ]
+      ],
+      "p1": 1.3712,
+      "type": "Isolated CAN Transceivers (with Power)",
+      "mount": "Isolated CAN Transceivers (with Power)",
+      "desc": "-40℃~+125℃ 150kV/us 2500 5Mbps LGA-16(4.7x5.2) Isolated CAN Transceivers (with Power) ROHS"
+    },
+    "count": 1
+  },
+  {
+    "bom": "TX32258M4FBDD2T",
+    "qty": 1,
+    "best": {
+      "code": "C5308003",
+      "model": "TX32258M4FBDD2T",
+      "brand": "Yajingxin",
+      "pkg": "SMD3225-4P",
+      "lib": "expand",
+      "pref": false,
+      "stock": 32272,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.1676
+        ],
+        [
+          50,
+          0.1331
+        ],
+        [
+          150,
+          0.1159
+        ]
+      ],
+      "p1": 0.1676,
+      "type": "Crystals",
+      "mount": "Crystals",
+      "desc": "-30℃~+85℃ 12pF 250Ω 8MHz Crystal Oscillator ±10ppm ±20ppm SMD3225-4P Crystals ROHS"
+    },
+    "count": 1
+  },
+  {
+    "bom": "RLM25FEGMR50M",
+    "qty": 3,
+    "best": {
+      "code": "C710260",
+      "model": "RLM25FEGMR50M",
+      "brand": "TA-I Tech",
+      "pkg": "2512",
+      "lib": "expand",
+      "pref": false,
+      "stock": 154434,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0728
+        ],
+        [
+          100,
+          0.0585
+        ],
+        [
+          300,
+          0.0515
+        ]
+      ],
+      "p1": 0.0728,
+      "type": "Current Sense Resistors / Shunt Resistors",
+      "mount": "Current Sense Resistors / Shunt Resistors",
+      "desc": "0.5mΩ 3W Current Sense Resistor SMD ±1% ±75ppm/℃ 2512 Current Sense Resistors / Shunt Resistors ROHS"
+    },
+    "count": 1
+  },
+  {
+    "bom": "SWPA6045S220MT",
+    "qty": 1,
+    "best": {
+      "code": "C83454",
+      "model": "SWPA6045S220MT",
+      "brand": "Sunlord",
+      "pkg": "SMD,6x6mm",
+      "lib": "expand",
+      "pref": false,
+      "stock": 17886,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0857
+        ],
+        [
+          100,
+          0.0705
+        ],
+        [
+          300,
+          0.063
+        ]
+      ],
+      "p1": 0.0857,
+      "type": "Power Inductors",
+      "mount": "Power Inductors",
+      "desc": "1.8A 2.2A 22uH 89mΩ ±20% SMD,6x6mm Power Inductors ROHS"
+    },
+    "count": 2
+  },
+  {
+    "bom": "SS16 SMA",
+    "qty": 1,
+    "best": {
+      "code": "C408384",
+      "model": "SS16F",
+      "brand": "MDD(Microdiode Semiconductor)",
+      "pkg": "SMAF",
+      "lib": "expand",
+      "pref": false,
+      "stock": 1108,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0186
+        ],
+        [
+          500,
+          0.0144
+        ],
+        [
+          3000,
+          0.0126
+        ]
+      ],
+      "p1": 0.0186,
+      "type": "Schottky Diodes",
+      "mount": "Schottky Diodes",
+      "desc": "-55℃~+150℃ 1A 25A 300uA@60V 60V 700mV@1A Independent SMAF Schottky Diodes ROHS"
+    },
+    "count": 20
+  },
+  {
+    "bom": "SMBJ30A",
+    "qty": 1,
+    "best": {
+      "code": "C353368",
+      "model": "SMBJ30A",
+      "brand": "Shandong Jingdao Microelectronics",
+      "pkg": "SMB",
+      "lib": "expand",
+      "pref": false,
+      "stock": 28680,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0395
+        ],
+        [
+          100,
+          0.0315
+        ],
+        [
+          300,
+          0.0276
+        ]
+      ],
+      "p1": 0.0395,
+      "type": "ESD and Surge Protection (TVS/ESD)",
+      "mount": "ESD and Surge Protection (TVS/ESD)",
+      "desc": "-65℃~+150℃ 12.4A 1uA 30V 36.8V 390pF 48.4V 600W@10/1000us TVS SMB ESD and Surge Protection (TVS/ESD) ROHS"
+    },
+    "count": 20
+  },
+  {
+    "bom": "ESDCAN24-2BLY",
+    "qty": 1,
+    "best": {
+      "code": "C5199246",
+      "model": "ESDCAN24-2BLY-ES",
+      "brand": "ElecSuper",
+      "pkg": "SOT-23",
+      "lib": "expand",
+      "pref": false,
+      "stock": 1533,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0349
+        ],
+        [
+          200,
+          0.0274
+        ],
+        [
+          600,
+          0.0231
+        ]
+      ],
+      "p1": 0.0349,
+      "type": "ESD and Surge Protection (TVS/ESD)",
+      "mount": "ESD and Surge Protection (TVS/ESD)",
+      "desc": "1uA 2 24V 24pF 26.5V 48V 600W@8/20us 8A Bidirectional ESD IEC 61000-4-2 SOT-23 ESD and Surge Protection (TVS/ESD) ROHS"
+    },
+    "count": 7
+  },
+  {
+    "bom": "TPUSBLC6-4SC6",
+    "qty": 2,
+    "best": {
+      "code": "C19170931",
+      "model": "USBLC6-4SC6Y-ES",
+      "brand": "ElecSuper",
+      "pkg": "SOT-23-6L",
+      "lib": "expand",
+      "pref": false,
+      "stock": 3889,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0289
+        ],
+        [
+          200,
+          0.022
+        ],
+        [
+          600,
+          0.0182
+        ]
+      ],
+      "p1": 0.0289,
+      "type": "ESD and Surge Protection (TVS/ESD)",
+      "mount": "ESD and Surge Protection (TVS/ESD)",
+      "desc": "-40℃~+125℃ 0.3pF、0.6pF 15V 1uA 4.5A 5V 60W@8/20us 6V ESD Four channels IEC 61000-4-2 Unidirectional SOT-23-6L ESD and Surge Protection (TVS/ESD) ROHS"
+    },
+    "count": 12
+  },
+  {
+    "bom": "NCP18XH103F03RB",
+    "qty": 1,
+    "best": {
+      "code": "C13564",
+      "model": "NCP18XH103F03RB",
+      "brand": "Murata Electronics",
+      "pkg": "0603",
+      "lib": "expand",
+      "pref": false,
+      "stock": 208649,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0363
+        ],
+        [
+          100,
+          0.0289
+        ],
+        [
+          300,
+          0.025
+        ]
+      ],
+      "p1": 0.0363,
+      "type": "NTC Thermistors",
+      "mount": "NTC Thermistors",
+      "desc": "-40℃~+125℃ 0.8mm 1.6mm 100mW 10kΩ 1mW/℃ 310uA 3380K 3434K 3455K ±1% ±1% 0603 NTC Thermistors ROHS"
+    },
+    "count": 2
+  },
+  {
+    "bom": "R-RJ45R08P-A004",
+    "qty": 2,
+    "best": {
+      "code": "C385834",
+      "model": "R-RJ45R08P-A004",
+      "brand": "Ckmtw(Shenzhen Cankemeng)",
+      "pkg": "Push-Pull",
+      "lib": "expand",
+      "pref": false,
+      "stock": 102153,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.2145
+        ],
+        [
+          10,
+          0.1677
+        ],
+        [
+          30,
+          0.1449
+        ]
+      ],
+      "p1": 0.2145,
+      "type": "Ethernet Connectors / Modular Connectors (RJ45 RJ11)",
+      "mount": "Ethernet Connectors / Modular Connectors (RJ45 RJ11)",
+      "desc": "0℃~+70℃ 1 12.6mm 15.1mm 15.9mm Gold Harpoon Contact (Plastic) Non-LED Non-PoE Phosphor Bronze RJ45 Jack Right Angle Unshielded Push-Pull Ethernet Connectors / Modular Connectors (RJ45 RJ11) ROHS"
+    },
+    "count": 2
+  },
+  {
+    "bom": "TL3342",
+    "qty": 1,
+    "best": {
+      "code": "C2886897",
+      "model": "TL3342F450QG",
+      "brand": "E-Switch",
+      "pkg": "SMD-4P,5.2x5.2mm",
+      "lib": "expand",
+      "pref": false,
+      "stock": 5,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.9387
+        ],
+        [
+          10,
+          0.7487
+        ],
+        [
+          30,
+          0.652
+        ]
+      ],
+      "p1": 0.9387,
+      "type": "Tactile Switches",
+      "mount": "Tactile Switches",
+      "desc": "-20℃~+70℃ 1.54mm 100,000 cycles 12V 4.5N 5.2mm 50mA Gull Wing Round Button SPST-NO Surface Mount,Vertical SMD-4P,5.2x5.2mm Tactile Switches ROHS"
+    },
+    "count": 7
+  },
+  {
+    "bom": "B5B-PH-K-S",
+    "qty": 1,
+    "best": {
+      "code": "C54582901",
+      "model": "XY-B5B-PH-K-S",
+      "brand": "XYECONN",
+      "pkg": "Plugin,P=2mm",
+      "lib": "expand",
+      "pref": false,
+      "stock": 1649,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0207
+        ],
+        [
+          200,
+          0.0162
+        ],
+        [
+          600,
+          0.0137
+        ]
+      ],
+      "p1": 0.0207,
+      "type": "Wire To Board Connector",
+      "mount": "Wire To Board Connector",
+      "desc": "插件,P=2mm Wire To Board Connector ROHS"
+    },
+    "count": 3
+  },
+  {
+    "bom": "BAT54C",
+    "qty": 1,
+    "best": {
+      "code": "C37704",
+      "model": "BAT54C,215",
+      "brand": "Nexperia",
+      "pkg": "SOT-23",
+      "lib": "expand",
+      "pref": true,
+      "stock": 409950,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0141
+        ],
+        [
+          500,
+          0.0105
+        ],
+        [
+          3000,
+          0.0088
+        ]
+      ],
+      "p1": 0.0141,
+      "type": "Schottky Diodes",
+      "mount": "Schottky Diodes",
+      "desc": "1 Pair Common Cathode 200mA 2uA@25V 30V 600mA 800mV@100mA SOT-23 Schottky Diodes ROHS"
+    },
+    "count": 20
+  },
+  {
+    "bom": "JVJ50V220M10x10",
+    "qty": 2,
+    "best": {
+      "code": "C46550417",
+      "model": "JVJ50V220M10x10",
+      "brand": "jieerrui",
+      "pkg": "SMD,D10xL10.5mm",
+      "lib": "expand",
+      "pref": false,
+      "stock": 132643,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.1535
+        ],
+        [
+          50,
+          0.1191
+        ],
+        [
+          150,
+          0.1023
+        ]
+      ],
+      "p1": 0.1535,
+      "type": "Aluminum Electrolytic Capacitors - SMD",
+      "mount": "Aluminum Electrolytic Capacitors - SMD",
+      "desc": "-55℃~+105℃ 10.5mm 10mm 2000hrs@105℃ 220mA@120Hz 220uF 50V ±20% SMD,D10xL10.5mm Aluminum Electrolytic Capacitors - SMD ROHS"
+    },
+    "count": 1
+  },
+  {
+    "bom": "C 10uF 50V 1210 X7R",
+    "qty": 1,
+    "best": {
+      "code": "C50767259",
+      "model": "TCC1210X7R106K500MT",
+      "brand": "CCTC",
+      "pkg": "1210",
+      "lib": "expand",
+      "pref": false,
+      "stock": 29206,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.1395
+        ],
+        [
+          50,
+          0.1106
+        ],
+        [
+          150,
+          0.096
+        ]
+      ],
+      "p1": 0.1395,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "10uF 50V X7R ±10% 1210 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 2.2uF 100V 1210 X7R",
+    "qty": 4,
+    "best": {
+      "code": "C5449052",
+      "model": "TCC1210X7R225K101MT",
+      "brand": "CCTC",
+      "pkg": "1210",
+      "lib": "expand",
+      "pref": false,
+      "stock": 72076,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0805
+        ],
+        [
+          50,
+          0.0648
+        ],
+        [
+          150,
+          0.0566
+        ]
+      ],
+      "p1": 0.0805,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "100V 2.2uF X7R ±10% 1210 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 47nF 100V 0603 X7R",
+    "qty": 1,
+    "best": {
+      "code": "C106247",
+      "model": "CC0603KRX7R0BB102",
+      "brand": "YAGEO",
+      "pkg": "0603",
+      "lib": "expand",
+      "pref": false,
+      "stock": 555156,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0043
+        ],
+        [
+          1000,
+          0.0034
+        ],
+        [
+          4000,
+          0.0029
+        ]
+      ],
+      "p1": 0.0043,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "100V 1nF X7R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 100nF 100V 0603 X7R",
+    "qty": 4,
+    "best": {
+      "code": "C106247",
+      "model": "CC0603KRX7R0BB102",
+      "brand": "YAGEO",
+      "pkg": "0603",
+      "lib": "expand",
+      "pref": false,
+      "stock": 555156,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0043
+        ],
+        [
+          1000,
+          0.0034
+        ],
+        [
+          4000,
+          0.0029
+        ]
+      ],
+      "p1": 0.0043,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "100V 1nF X7R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 22uF 16V 1206 X7R",
+    "qty": 1,
+    "best": {
+      "code": "C113903",
+      "model": "CC1206KRX7R7BB224",
+      "brand": "YAGEO",
+      "pkg": "1206",
+      "lib": "expand",
+      "pref": false,
+      "stock": 624,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0263
+        ],
+        [
+          200,
+          0.0204
+        ],
+        [
+          600,
+          0.0171
+        ]
+      ],
+      "p1": 0.0263,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "16V 220nF X7R ±10% 1206 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 10uF 25V 0805 X7R",
+    "qty": 2,
+    "best": {
+      "code": "C15850",
+      "model": "CL21A106KAYNNNE",
+      "brand": "Samsung Electro-Mechanics",
+      "pkg": "0805",
+      "lib": "base",
+      "pref": false,
+      "stock": 9160302,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.031
+        ],
+        [
+          200,
+          0.0233
+        ],
+        [
+          600,
+          0.0199
+        ]
+      ],
+      "p1": 0.031,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "10uF 25V X5R ±10% 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 4.7uF 10V 0603 X7R",
+    "qty": 1,
+    "best": {
+      "code": "C519416",
+      "model": "CC0603KRX7R6BB222",
+      "brand": "YAGEO",
+      "pkg": "0603",
+      "lib": "expand",
+      "pref": false,
+      "stock": 6842,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0057
+        ],
+        [
+          1000,
+          0.0047
+        ],
+        [
+          4000,
+          0.004
+        ]
+      ],
+      "p1": 0.0057,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "10V 2.2nF X7R ±10% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 1uF 25V 0603 X7R",
+    "qty": 7,
+    "best": {
+      "code": "C5254686",
+      "model": "CSA0603X7R105K250JT",
+      "brand": "HRE",
+      "pkg": "0603",
+      "lib": "expand",
+      "pref": false,
+      "stock": 312936,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0079
+        ],
+        [
+          1000,
+          0.0061
+        ],
+        [
+          4000,
+          0.0051
+        ]
+      ],
+      "p1": 0.0079,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "1uF 25V X7R ±10% 消费级 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 100nF 50V 0402 X7R",
+    "qty": 10,
+    "best": {
+      "code": "C307331",
+      "model": "CL05B104KB54PNC",
+      "brand": "Samsung Electro-Mechanics",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 19431360,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0086
+        ],
+        [
+          1000,
+          0.0064
+        ],
+        [
+          3000,
+          0.0054
+        ]
+      ],
+      "p1": 0.0086,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "100nF 50V X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 10nF 50V 0402 X7R",
+    "qty": 1,
+    "best": {
+      "code": "C15195",
+      "model": "CL05B103KB5NNNC",
+      "brand": "Samsung Electro-Mechanics",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 5876882,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0038
+        ],
+        [
+          1000,
+          0.0028
+        ],
+        [
+          3000,
+          0.0023
+        ]
+      ],
+      "p1": 0.0038,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "10nF 50V X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 1nF 50V 0402 X7R",
+    "qty": 3,
+    "best": {
+      "code": "C1523",
+      "model": "0402B102K500NT",
+      "brand": "FH (Guangdong Fenghua Advanced Tech)",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 3767064,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0017
+        ],
+        [
+          1000,
+          0.0013
+        ],
+        [
+          3000,
+          0.0011
+        ]
+      ],
+      "p1": 0.0017,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "1nF 50V X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 4.7nF 50V 0402 X7R",
+    "qty": 1,
+    "best": {
+      "code": "C1538",
+      "model": "0402B472K500NT",
+      "brand": "FH (Guangdong Fenghua Advanced Tech)",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 803108,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0038
+        ],
+        [
+          1000,
+          0.0029
+        ],
+        [
+          3000,
+          0.0024
+        ]
+      ],
+      "p1": 0.0038,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "4.7nF 50V X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "C 15pF 50V C0G 0402",
+    "qty": 2,
+    "best": {
+      "code": "C106997",
+      "model": "CC0402JRNPO9BN150",
+      "brand": "YAGEO",
+      "pkg": "0402",
+      "lib": "expand",
+      "pref": false,
+      "stock": 1567232,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0013
+        ],
+        [
+          1000,
+          0.001
+        ],
+        [
+          3000,
+          0.0009
+        ]
+      ],
+      "p1": 0.0013,
+      "type": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "mount": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+      "desc": "15pF 50V NP0 ±5% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+    }
+  },
+  {
+    "bom": "R 60.4 0402 1%",
+    "qty": 2,
+    "best": null
+  },
+  {
+    "bom": "R 100 0402 1%",
+    "qty": 9,
+    "best": {
+      "code": "C25076",
+      "model": "0402WGF1000TCE",
+      "brand": "UNI-ROYAL(Uniroyal Elec)",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 9514096,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0011
+        ],
+        [
+          1000,
+          0.0009
+        ],
+        [
+          3000,
+          0.0007
+        ]
+      ],
+      "p1": 0.0011,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100Ω 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "R 1k 0402 1%",
+    "qty": 2,
+    "best": {
+      "code": "C11702",
+      "model": "0402WGF1001TCE",
+      "brand": "UNI-ROYAL(Uniroyal Elec)",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 28212128,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0011
+        ],
+        [
+          1000,
+          0.0008
+        ],
+        [
+          3000,
+          0.0007
+        ]
+      ],
+      "p1": 0.0011,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 1kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "R 5.6k 0402 1%",
+    "qty": 1,
+    "best": {
+      "code": "C25908",
+      "model": "0402WGF5601TCE",
+      "brand": "UNI-ROYAL(Uniroyal Elec)",
+      "pkg": "0402",
+      "lib": "expand",
+      "pref": true,
+      "stock": 228107,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.001
+        ],
+        [
+          1000,
+          0.0008
+        ],
+        [
+          3000,
+          0.0007
+        ]
+      ],
+      "p1": 0.001,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 5.6kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "R 10k 0402 1%",
+    "qty": 4,
+    "best": {
+      "code": "C25744",
+      "model": "0402WGF1002TCE",
+      "brand": "UNI-ROYAL(Uniroyal Elec)",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 33058616,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0009
+        ],
+        [
+          1000,
+          0.0007
+        ],
+        [
+          3000,
+          0.0006
+        ]
+      ],
+      "p1": 0.0009,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 10kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "R 18k 0402 1%",
+    "qty": 2,
+    "best": {
+      "code": "C25762",
+      "model": "0402WGF1802TCE",
+      "brand": "UNI-ROYAL(Uniroyal Elec)",
+      "pkg": "0402",
+      "lib": "expand",
+      "pref": true,
+      "stock": 389856,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0013
+        ],
+        [
+          1000,
+          0.001
+        ],
+        [
+          3000,
+          0.0009
+        ]
+      ],
+      "p1": 0.0013,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 18kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "R 54.9k 0402 1%",
+    "qty": 1,
+    "best": {
+      "code": "C48391731",
+      "model": "CL0402FN54K9P",
+      "brand": "CHANGLONG",
+      "pkg": "0402",
+      "lib": "expand",
+      "pref": false,
+      "stock": 6268,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0007
+        ],
+        [
+          1000,
+          0.0005
+        ],
+        [
+          3000,
+          0.0005
+        ]
+      ],
+      "p1": 0.0007,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+70℃ 50V 54.9kΩ 62.5mW Thick Film Resistor ±1% ±200ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "R 100k 0402 1%",
+    "qty": 1,
+    "best": {
+      "code": "C25741",
+      "model": "0402WGF1003TCE",
+      "brand": "UNI-ROYAL(Uniroyal Elec)",
+      "pkg": "0402",
+      "lib": "base",
+      "pref": false,
+      "stock": 11987084,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0009
+        ],
+        [
+          1000,
+          0.0007
+        ],
+        [
+          3000,
+          0.0006
+        ]
+      ],
+      "p1": 0.0009,
+      "type": "Chip Resistor - Surface Mount",
+      "mount": "Chip Resistor - Surface Mount",
+      "desc": "-55℃~+155℃ 100kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS"
+    }
+  },
+  {
+    "bom": "LED 0603",
+    "qty": 2,
+    "best": {
+      "code": "C2286",
+      "model": "KT-0603R",
+      "brand": "Hubei KENTO Elec",
+      "pkg": "0603",
+      "lib": "base",
+      "pref": false,
+      "stock": 8071725,
+      "min_qty": null,
+      "prices": [
+        [
+          1,
+          0.0077
+        ],
+        [
+          1000,
+          0.0059
+        ],
+        [
+          4000,
+          0.0046
+        ]
+      ],
+      "p1": 0.0077,
+      "type": "LED Indication - Discrete",
+      "mount": "LED Indication - Discrete",
+      "desc": "-40℃~+85℃ 1.6mm x 0.8mm square LED 1.8V~2.4V 120° 20mA 300mcd 40mW 615nm~630nm 645nm Discrete Diode Red Water Clear 0603 LED Indication - Discrete ROHS"
+    }
+  }
+]

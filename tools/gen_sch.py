@@ -9,6 +9,7 @@
 import heapq
 import math
 import os
+import subprocess
 import sys
 import uuid
 
@@ -20,7 +21,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "kicad")
 PROJECT = "pancake"
 POWER_NETS = {"GND": "power:GND", "+3V3": "power:+3V3", "+5V": "power:+5V",
-              "+12V": "power:+12V", "VBUS": "power:VBUS"}
+              "+12V": "power:+12V", "VBUS": "power:VBUS",
+              "GND_ISO": "pancake:GND_ISO"}
 NC = None
 GRID = 2.54
 G = 1.27          # routing grid
@@ -156,27 +158,100 @@ def make_ic(name, ref, left, right, width=15.24):
     return build
 
 
+# 絶縁側GNDの電源シンボル (標準のGND2を土台に名前だけ替える)
+def make_gnd_iso(lib_id):
+    src = libsym("power:GND2")
+    src[1] = lib_id
+    for p in find(src, "property"):
+        if p[1] == "Value":
+            p[2] = "GND_ISO"
+        elif p[1] == "Description":
+            p[2] = "CANの絶縁側GND"
+    for sub in find(src, "symbol"):
+        sub[1] = sub[1].replace("GND2", "GND_ISO", 1)
+    return src
+
+
 CUSTOM = {
-    "DRV8300D_RGE": make_ic("DRV8300D_RGE", "U", [
-        ("22", "INHA", "input"), ("1", "INLA", "input"), ("23", "INHB", "input"),
-        ("2", "INLB", "input"), ("24", "INHC", "input"), ("3", "INLC", "input"), None,
-        ("4", "GVDD", "power_in"), ("5", "MODE", "input"), ("21", "DT", "input"),
-        ("7", "NC", "no_connect"), ("8", "NC", "no_connect"), ("6", "GND", "power_in"),
-        ("25", "PAD", "passive")], [
-        ("20", "BSTA", "passive"), ("19", "GHA", "output"), ("18", "SHA", "passive"),
-        ("11", "GLA", "output"), ("17", "BSTB", "passive"), ("16", "GHB", "output"),
-        ("15", "SHB", "passive"), ("10", "GLB", "output"), ("14", "BSTC", "passive"),
-        ("13", "GHC", "output"), ("12", "SHC", "passive"), ("9", "GLC", "output")], 20.32),
-    "LMR51625": make_ic("LMR51625", "U", [
-        ("3", "VIN", "power_in"), ("2", "EN", "input"), ("4", "GND", "power_in")], [
-        ("6", "CB", "passive"), ("5", "SW", "output"), ("1", "FB", "input")]),
+    "DRV8323RH": make_ic("DRV8323RH", "U", [
+        ("37", "INHA", "input"),
+        ("38", "INLA", "input"),
+        ("39", "INHB", "input"),
+        ("40", "INLB", "input"),
+        ("41", "INHC", "input"),
+        ("42", "INLC", "input"),
+        None,
+        ("33", "ENABLE", "input"),
+        ("34", "CAL", "input"),
+        ("28", "nFAULT", "open_collector"),
+        None,
+        ("25", "SOA", "output"),
+        None,
+        None,
+        ("24", "SOB", "output"),
+        None,
+        None,
+        ("23", "SOC", "output"),
+        None,
+        ("29", "MODE", "input"),
+        ("30", "IDRIVE", "input"),
+        ("31", "VDS", "input"),
+        ("32", "GAIN", "input"),
+        ("36", "DVDD", "power_out"),
+        None,
+        ("26", "VREF", "power_in"),
+        None,
+        ("35", "AGND", "power_in"),
+        ("27", "DGND", "power_in"),
+        ("2", "PGND", "power_in"),
+        ("43", "BGND", "power_in"),
+        ("49", "PAD", "passive"),
+        ("46", "NC", "no_connect")], [
+        ("6", "VM", "power_in"),
+        ("7", "VDRAIN", "input"),
+        None,
+        ("5", "VCP", "passive"),
+        ("4", "CPH", "passive"),
+        ("3", "CPL", "passive"),
+        None,
+        ("8", "GHA", "output"),
+        ("9", "SHA", "passive"),
+        ("10", "GLA", "output"),
+        ("11", "SPA", "passive"),
+        ("12", "SNA", "passive"),
+        None,
+        ("17", "GHB", "output"),
+        ("16", "SHB", "passive"),
+        ("15", "GLB", "output"),
+        ("14", "SPB", "passive"),
+        ("13", "SNB", "passive"),
+        None,
+        ("18", "GHC", "output"),
+        ("19", "SHC", "passive"),
+        ("20", "GLC", "output"),
+        ("21", "SPC", "passive"),
+        ("22", "SNC", "passive"),
+        None,
+        ("47", "VIN", "power_in"),
+        ("48", "nSHDN", "input"),
+        None,
+        ("45", "SW", "output"),
+        ("44", "CB", "passive"),
+        None,
+        ("1", "FB", "input")], 25.4),
     "RT9013-33": make_ic("RT9013-33", "U", [
         ("1", "VIN", "power_in"), ("3", "EN", "input"), ("2", "GND", "power_in")], [
         ("5", "VOUT", "power_out"), ("4", "NC", "no_connect")]),
-    "TCAN1044V": make_ic("TCAN1044V", "U", [
-        ("3", "VCC", "power_in"), ("5", "VIO", "power_in"), ("4", "RXD", "output"),
-        ("1", "TXD", "input"), ("8", "STB", "input"), ("2", "GND", "power_in")], [
-        ("7", "CANH", "bidirectional"), ("6", "CANL", "bidirectional")]),
+    "CA-IS2062A": make_ic("CA-IS2062A", "U", [
+        ("1", "RXD", "output"), ("4", "TXD", "input"), None,
+        ("6", "VDDP", "power_in"), None, ("7", "VDDL", "power_in"), None,
+        ("5", "GNDP1", "power_in"), ("8", "GND1", "power_in"),
+        ("2", "NC", "no_connect"), ("3", "NC", "no_connect")], [
+        ("15", "CANH", "bidirectional"), ("14", "CANL", "bidirectional"), None,
+        ("11", "VISOOUT", "power_out"), ("10", "VISOIN", "power_in"), None, None,
+        ("12", "GNDP2", "power_in"), ("9", "GND2", "power_in"),
+        ("16", "NC", "no_connect"), ("13", "NC", "no_connect")], 25.4),
+    "GND_ISO": make_gnd_iso,
 }
 
 # ---------------------------------------------------------------- design
@@ -186,15 +261,31 @@ FP = {
     "C0402": "Capacitor_SMD:C_0402_1005Metric", "C0603": "Capacitor_SMD:C_0603_1608Metric",
     "C0805": "Capacitor_SMD:C_0805_2012Metric", "C1206": "Capacitor_SMD:C_1206_3216Metric",
     "C1210": "Capacitor_SMD:C_1210_3225Metric", "CP10": "Capacitor_SMD:CP_Elec_10x10.5",
-    "SMB": "Diode_SMD:D_SMB", "LED0603": "LED_SMD:LED_0603_1608Metric",
+    "SMB": "Diode_SMD:D_SMB", "SMA": "Diode_SMD:D_SMA", "LED0603": "LED_SMD:LED_0603_1608Metric",
     "SOT23": "Package_TO_SOT_SMD:SOT-23", "SOT23-5": "Package_TO_SOT_SMD:SOT-23-5",
     "SOT23-6": "Package_TO_SOT_SMD:SOT-23-6", "SOIC8": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
     "XTAL3225": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
 }
 
+# JLCの部品番号 (Basic または Preferred Extended)。照合で別の部品に置き換わらないように回路図へ入れる
+LCSC = {
+    ("1uF 50V", "C_0603_1608"): "C15849", ("4.7uF 16V", "C_0603_1608"): "C19666",
+    ("100nF 100V", "C_0805_2012"): "C28233", ("47nF 50V", "C_0603_1608"): "C1622",
+    ("10uF 50V", "C_1206_3216"): "C13585", ("22uF 25V", "C_1206_3216"): "C12891",
+    ("10uF 25V", "C_0805_2012"): "C15850", ("100nF", "C_0402_1005"): "C307331",
+    ("100nF 50V", "C_0402_1005"): "C307331", ("10nF", "C_0402_1005"): "C15195",
+    ("1nF", "C_0402_1005"): "C1523", ("4.7nF", "C_0402_1005"): "C1538",
+    ("15pF", "C_0402_1005"): "C1548", ("120", "R_0402_1005"): "C25079",
+    ("100", "R_0402_1005"): "C25076", ("1k", "R_0402_1005"): "C11702",
+    ("5.6k", "R_0402_1005"): "C25908", ("10k", "R_0402_1005"): "C25744",
+    ("18k", "R_0402_1005"): "C25762", ("100k", "R_0402_1005"): "C25741",
+    ("LED", "LED_0603_1608"): "C2286", ("TS-1187A-B-A-B", None): "C318884",
+}
+
 PAGES = {}    # page -> list of comps
 PORTS = {}    # page -> list of (net, x, y, side, shape)
 FLAGS = {}    # page -> list of (net, x, y)
+TIES = {}     # page -> list of (net~tag, x, y, block)
 _counts = {}
 CUR_BLOCK = ["?"]
 
@@ -204,13 +295,13 @@ def block(name):
 
 
 def comp(page, prefix, lib_id, value, nets, at, rot=0, fp=None, mpn=None, in_bom=True,
-         txt=None, mirror=False):
+         txt=None, mirror=False, dnp=False):
     """at: (x, y) mm. y may be a net name: align with that net's pin already placed."""
     _counts[prefix] = _counts.get(prefix, 0) + 1
     ref = "%s%d" % (prefix, _counts[prefix])
     PAGES.setdefault(page, []).append(dict(ref=ref, lib=lib_id, value=value, nets=nets,
                                            fp=FP.get(fp, fp), mpn=mpn, in_bom=in_bom,
-                                           rot=rot, at=at, txt=txt, mirror=mirror,
+                                           rot=rot, at=at, txt=txt, mirror=mirror, dnp=dnp,
                                            block=CUR_BLOCK[0]))
     return ref
 
@@ -233,155 +324,143 @@ def flag(page, net, at):
     FLAGS.setdefault(page, []).append((net, at[0], at[1], CUR_BLOCK[0]))
 
 
+def tie(page, key, at):
+    """Power symbol for a locally wired power net 'NET~tag'.
+    Pins on 'NET~tag' are joined by drawn wires; this symbol ties them to NET."""
+    TIES.setdefault(page, []).append((key, at[0], at[1], CUR_BLOCK[0]))
+
+
 # ======== 電源シート
 P = "power"
 block("電源入力・保護")
-comp(P, "J", "Connector_Generic:Conn_01x02", "電源入力(未選定)", {"1": "VBUS", "2": "GND"},
-     (35, 60), 180, txt="left")
+comp(P, "J", "Connector_Generic:Conn_01x02", "XT60PW-M", {"1": "VBUS", "2": "GND"},
+     (35, 60), 180, txt="left", fp="pancake:XT60PW-M_1plus_2minus")
 comp(P, "D", "Device:D_TVS", "SMBJ30A", {"1": "VBUS", "2": "GND"}, (55, 60), 270, "SMB")
-for i in range(2):
-    comp(P, "C", "Device:C_Polarized", "220uF 50V", {"1": "VBUS", "2": "GND"}, (72 + 17 * i, 60),
-         0, "CP10", "JVJ50V220M10x10")
+for i in range(3):
+    comp(P, "C", "Device:C_Polarized", "100uF 63V", {"1": "VBUS", "2": "GND"}, (72 + 17 * i, 60),
+         0, "CP10", "118EC447")
 flag(P, "VBUS", (40, 85))
 flag(P, "GND", (60, 85))
 
-block("12V ゲート駆動電源 (TPS7A4101)")
-comp(P, "U", "Regulator_Linear:TPS7A4101DGN", "TPS7A4101DGNR",
-     {"8": "VBUS", "5": "VBUS", "1": "+12V", "2": "FB_12V", "4": "GND", "9": "GND",
-      "3": NC, "6": NC, "7": NC}, (160, 60))
-C(P, "1uF 100V", "VBUS", "GND", (135, 63), fp="C0805")
-R(P, "91k", "+12V", "FB_12V", (185, 63))
-C(P, "10nF", "+12V", "FB_12V", (197, 63))
-R(P, "10k", "FB_12V", "GND", (185, 80))
-C(P, "10uF 25V", "+12V", "GND", (212, 63), fp="C0805")
-
-block("5V 降圧 (LMR51625)")
-comp(P, "U", "pancake:LMR51625", "LMR51625YDDCR",
-     {"3": "VBUS", "2": "VBUS", "4": "GND", "6": "CB_5V", "5": "SW_5V", "1": "FB_5V"},
-     (160, 135), fp="SOT23-6")
-C(P, "2.2uF 100V", "VBUS", "GND", (100, 137), fp="C1210")
-C(P, "2.2uF 100V", "VBUS", "GND", (117, 137), fp="C1210")
-C(P, "100nF 100V", "VBUS", "GND", (136, 137), fp="C0603")
-C(P, "100nF 50V", "CB_5V", "SW_5V", (182, 122), 90)
-comp(P, "L", "Device:L", "4.7uH", {"1": "SW_5V", "2": "+5V"}, (198, "SW_5V"), 90, None,
-     "MWSC0630H4R7MT")
-R(P, "53.6k", "+5V", "FB_5V", (215, 145))
-R(P, "10.2k", "FB_5V", "GND", (215, 162))
-C(P, "22uF 16V", "+5V", "GND", (230, 145), fp="C1206")
-flag(P, "+5V", (245, 125))
+flag(P, "+5V", (85, 85))
 
 block("3.3V LDO (RT9013)")
 comp(P, "U", "pancake:RT9013-33", "RT9013-33GB",
-     {"1": "VIN_LDO", "3": "VIN_LDO", "2": "GND", "5": "+3V3", "4": NC}, (190, 222),
+     {"1": "VIN_LDO", "3": "VIN_LDO", "2": "GND", "5": "+3V3", "4": NC}, (190, 122),
      fp="SOT23-5")
-C(P, "1uF 25V", "VIN_LDO", "GND", (165, 227), fp="C0603")
-comp(P, "#FLG", "power:PWR_FLAG", "PWR_FLAG", {"1": "VIN_LDO"}, (180, 212), in_bom=False)
-# 5V(降圧) と USBの5V をダイオードORしてLDOへ。USBだけでMCU・エンコーダ・CH340が動く
-comp(P, "D", "Diode:BAT54C", "BAT54C", {"1": "+5V", "2": "VBUS_USB", "3": "VIN_LDO"},
-     (163, 205), 0, "SOT23", txt="above")
-C(P, "1uF 25V", "+3V3", "GND", (215, 227), fp="C0603")
+C(P, "1uF 50V", "VIN_LDO", "GND", (165, 127), fp="C0603")
+comp(P, "#FLG", "power:PWR_FLAG", "PWR_FLAG", {"1": "VIN_LDO"}, (180, 112), in_bom=False)
+# 5V(降圧) と ST-Link(SWD)の5V をダイオードORしてLDOへ。ST-Linkだけでも MCU・エンコーダが動く
+comp(P, "D", "Diode:BAT54C", "BAT54C", {"1": "+5V", "2": "SWD_5V", "3": "VIN_LDO"},
+     (163, 105), 0, "SOT23", txt="above")
+C(P, "1uF 50V", "+3V3", "GND", (215, 127), fp="C0603")
 
 block("VBUS電圧検出 (約62Vフルスケール)")
 R(P, "100k", "VBUS", "VBUS_SENSE", (260, 63))
 R(P, "5.6k", "VBUS_SENSE", "GND", (260, 82))
-C(P, "10nF", "VBUS_SENSE", "GND", (272, 82))
+C(P, "1nF", "VBUS_SENSE", "GND", (272, 82))
 port(P, "VBUS_SENSE", (290, 73.66), "R", "output")
 
-block("USB Type-C (デバッグ用シリアル・書き込み・給電)")
-comp(P, "J", "Connector:USB_C_Receptacle_USB2.0_16P", "USB-C",
-     {"A4": "VBUS_USB", "A9": "VBUS_USB", "B4": "VBUS_USB", "B9": "VBUS_USB",
-      "A5": "CC1", "B5": "CC2", "A6": "USB_DP", "B6": "USB_DP", "A7": "USB_DM", "B7": "USB_DM",
-      "A8": NC, "B8": NC, "A1": "GND", "A12": "GND", "B1": "GND", "B12": "GND", "SH": "GND"},
-     (285, 150), 0, None, "TYPE-C-31-M-12", txt="above")
-R(P, "5.1k", "CC1", "GND", (312, "CC1"), 90)
-R(P, "5.1k", "CC2", "GND", (328, "CC2"), 90)
-comp(P, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
-     {"5": "VBUS_USB", "2": "GND", "1": "USB_DM", "3": "USB_DP", "4": NC, "6": NC},
-     (318, 192), 270, None, "TPUSBLC6-4SC6", txt="below")
-comp(P, "U", "Interface_USB:CH340C", "CH340C", {"1": "GND", "2": "UART_RX", "3": "UART_TX",
-                                                 "4": "+3V3", "16": "+3V3", "5": "USB_DP",
-                                                 "6": "USB_DM", "13": "DTR_N", "14": "RTS_N",
-                                                 "7": NC, "8": NC, "9": NC, "10": NC,
-                                                 "11": NC, "12": NC, "15": NC},
-     (355, 160), 0, "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm", "CH340C")
-C(P, "100nF", "+3V3", "GND", (340, 128))
-port(P, "UART_RX", (380, "UART_RX"), "R", "output")
-port(P, "UART_TX", (380, "UART_TX"), "R", "input")
-block("自動書き込み (DTR→BOOT0, RTS→NRST)")
-comp(P, "D", "Diode:1N4148WS", "1N4148WS", {"1": "RTS_N", "2": "NRST"}, (372, 190), 0,
-     "Diode_SMD:D_SOD-323")
-port(P, "NRST", (388, 190.5), "R")
-R(P, "10k", "DTR_N", "PNP_B", (360, 215), 90)
-comp(P, "Q", "Transistor_BJT:MMBT3906", "MMBT3906", {"1": "PNP_B", "2": "+3V3", "3": "BOOT0"},
-     (373, 215), 0, "SOT23", txt="right", mirror=True)
-R(P, "10k", "BOOT0", "GND", (383, 233))
-port(P, "BOOT0", (395, 226.06), "R")
+port(P, "SWD_5V", (140, None), "L", "input")
 
 # ======== パワー段シート
 B = "bridge"
-block("ゲートドライバ (DRV8300)")
-drv = {"22": "PWM_AH", "1": "PWM_AL", "23": "PWM_BH", "2": "PWM_BL", "24": "PWM_CH",
-       "3": "PWM_CL", "4": "+12V", "5": NC, "21": NC, "7": NC, "8": NC, "6": "GND",
-       "25": "GND"}
-for ph, (bst, gh, sh, gl) in zip("ABC", [("20", "19", "18", "11"), ("17", "16", "15", "10"),
-                                       ("14", "13", "12", "9")]):
-    drv.update({bst: "BST_" + ph, gh: "GH_" + ph, sh: "PHASE_" + ph, gl: "GL_" + ph})
-comp(B, "U", "pancake:DRV8300D_RGE", "DRV8300DRGER", drv, (75, 120))
-for net in ("PWM_AH", "PWM_AL", "PWM_BH", "PWM_BL", "PWM_CH", "PWM_CL"):
-    port(B, net, (35, None), "L", "input")
-C(B, "10uF 25V", "+12V", "GND", (45, 160), fp="C0805")
-C(B, "100nF 50V", "+12V", "GND", (62, 160))
+block("ゲートドライバ・5V降圧 (DRV8323RH)")
+drv = {"37": "PWM_AH", "38": "PWM_AL", "39": "PWM_BH", "40": "PWM_BL", "41": "PWM_CH",
+       "42": "PWM_CL", "33": "DRV_EN", "34": "DRV_CAL", "28": "DRV_NFAULT",
+       "25": "SOA", "24": "SOB", "23": "SOC",
+       "29": "GND", "30": "IDRIVE", "31": "VDS_SET", "32": "DVDD", "36": "DVDD",
+       "26": "+3V3", "35": "GND", "27": "GND", "2": "GND", "43": "GND", "49": "GND", "46": NC,
+       "6": "VBUS", "7": "VDRAIN", "5": "VCP", "4": "CPH", "3": "CPL",
+       "47": "VBUS", "48": NC, "45": "SW_5V", "44": "CB_5V", "1": "FB_5V"}
+for ph, (gh, sh, gl, sp, sn) in zip("ABC", [("8", "9", "10", "11", "12"),
+                                           ("17", "16", "15", "14", "13"),
+                                           ("18", "19", "20", "21", "22")]):
+    drv.update({gh: "GATE_%sH" % ph, sh: "PHASE_" + ph, gl: "GATE_%sL" % ph,
+                sp: "SP_" + ph, sn: "SN_" + ph})
+comp(B, "U", "pancake:DRV8323RH", "DRV8323RHRGZR", drv, (125, 105),
+     fp="Package_DFN_QFN:Texas_RGZ0048A_VQFN-48-1EP_7x7mm_P0.5mm_EP5.15x5.15mm_ThermalVias")
+for net in ("PWM_AH", "PWM_AL", "PWM_BH", "PWM_BL", "PWM_CH", "PWM_CL", "DRV_EN", "DRV_CAL"):
+    port(B, net, (40, None), "L", "input")
+port(B, "DRV_NFAULT", (40, None), "L", "output")
+R(B, "10k", "+3V3", "DRV_NFAULT", (22, 110))
+# SOx = 1.65V - 20mV/A (GAIN=40、0.5mΩ)
 for k, ph in enumerate("ABC"):
-    block("%s相 ハーフブリッジ・電流検出" % ph)
-    ox, oy = 125, 45 + 80 * k
-    C(B, "1uF 25V", "BST_" + ph, "PHASE_" + ph, (ox, oy + 2), fp="C0603")
-    R(B, "3.3", "GH_" + ph, "GATE_%sH" % ph, (ox + 22, oy - 10), 90, "R0603")
-    R(B, "3.3", "GL_" + ph, "GATE_%sL" % ph, (ox + 22, oy + 15), 90, "R0603")
+    R(B, "100", "SO" + ph, "ISENSE_" + ph, (75, "SO" + ph), 270)
+    C(B, "1nF", "ISENSE_" + ph, "GND", (24 + 14 * k, 168))
+    port(B, "ISENSE_" + ph, (40, "SO" + ph), "L", "output")
+# IDRIVE: 18k=30/60mA、75k=60/120mA。VDS: 18k=0.13V、75k=0.26V
+R(B, "18k", "IDRIVE", "GND", (72, 168))
+R(B, "18k", "VDS_SET", "GND", (84, 168))
+C(B, "1uF 50V", "DVDD", "GND", (98, 168), fp="C0603")
+C(B, "100nF", "+3V3", "GND", (114, 172))
+C(B, "100nF 100V", "VBUS", "GND", (128, 172), fp="C0805")
+C(B, "10uF 50V", "VBUS", "GND", (146, 172), fp="C1206")
+C(B, "2.2uF 100V", "VBUS", "GND", (163, 172), fp="C1210")
+C(B, "1uF 50V", "VCP", "VBUS", (165, 45), fp="C0603")
+C(B, "47nF 50V", "CPH", "CPL", (182, 52), fp="C0603")
+C(B, "100nF 50V", "CB_5V", "SW_5V", (112, 200), 90)
+comp(B, "D", "Device:D_Schottky", "SS16", {"1": "SW_5V", "2": "GND"}, (125, 222), 270, "SMA")
+comp(B, "L", "Device:L", "22uH", {"1": "SW_5V", "2": "+5V"}, (150, 212), 90,
+     "Inductor_SMD:L_Sunlord_SWPA6045S", "SWPA6045S220MT")
+# 0.765V x (1 + 100k/18k) = 5.02V
+R(B, "100k", "+5V", "FB_5V", (172, 225))
+R(B, "18k", "FB_5V", "GND", (172, 242))
+C(B, "22uF 25V", "+5V", "GND", (190, 225), fp="C1206")
+for k, ph in enumerate("ABC"):
+    block("%s相 ハーフブリッジ" % ph)
+    ox, oy = 225, 44 + 86 * k
     comp(B, "Q", "Transistor_FET:NTMFS016N06CT1G", "NTMFS5C628NLT1G",
-         {"4": "GATE_%sH" % ph, "5": "VBUS", "1": "PHASE_" + ph, "2": "PHASE_" + ph,
+         {"4": "GATE_%sH" % ph, "5": "VBUS~" + ph, "1": "PHASE_" + ph, "2": "PHASE_" + ph,
           "3": "PHASE_" + ph}, (ox + 38, oy - 10), txt="right")
     comp(B, "Q", "Transistor_FET:NTMFS016N06CT1G", "NTMFS5C628NLT1G",
          {"4": "GATE_%sL" % ph, "5": "PHASE_" + ph, "1": "SHUNT_" + ph, "2": "SHUNT_" + ph,
           "3": "SHUNT_" + ph}, (ox + 38, oy + 15), txt="right")
-    comp(B, "R", "Device:R", "0.5m", {"1": "SHUNT_" + ph, "2": "GND"}, (ox + 40.54, oy + 35),
+    comp(B, "R", "Device:R", "0.5m", {"1": "SHUNT_" + ph, "2": "GND~" + ph}, (ox + 40.54, oy + 35),
          0, "R2512", "RLM25FEGMR50M")
-    comp(B, "J", "Connector_Generic:Conn_01x01", "モーター%s(未選定)" % ph,
-         {"1": "PHASE_" + ph}, (ox + 80, oy + 2), txt="right")
-    C(B, "100nF 100V", "VBUS", "GND", (ox + 60, oy - 17), fp="C0603")
-    C(B, "2.2uF 100V", "VBUS", "GND", (ox + 78, oy - 17), fp="C1210")
-    R(B, "1k", "SHUNT_" + ph, "ISENSE_" + ph, (ox + 62, oy + 27), 90)
-    R(B, "62k", "+3V3", "ISENSE_" + ph, (ox + 75, oy + 20))
-    port(B, "ISENSE_" + ph, (ox + 95, oy + 27.94), "R", "output")
+    comp(B, "J", "Connector_Generic:Conn_01x01", "モーター%s" % ph,
+         {"1": "PHASE_" + ph}, (ox + 80, oy + 2), txt="right",
+         fp="pancake:MotorPad_6x6_moteus")
+    # 入力コンデンサは上FETドレイン〜シャントのGND端の間に置く (スイッチングループを最小に)
+    C(B, "100nF 100V", "VBUS~" + ph, "GND~" + ph, (ox + 60, oy - 17), fp="C0805")
+    C(B, "2.2uF 100V", "VBUS~" + ph, "GND~" + ph, (ox + 78, oy - 17), fp="C1210")
+    # スナバは未実装パッド。試作で跳ねを見て実装する (下FETの直近に置く)
+    comp(B, "R", "Device:R", "2.2", {"1": "PHASE_" + ph, "2": "SNUB_" + ph}, (ox + 112, oy + 12),
+         0, "Resistor_SMD:R_1206_3216Metric", in_bom=False, dnp=True)
+    comp(B, "C", "Device:C", "2.2nF 100V", {"1": "SNUB_" + ph, "2": "GND"}, (ox + 112, oy + 28),
+         0, "C0603", in_bom=False, dnp=True)
+    tie(B, "VBUS~" + ph, (ox + 92, oy - 24))
+    tie(B, "GND~" + ph, (ox + 40.54, oy + 42))
 block("FET温度検出 (NTCはFET近傍に配置)")
-R(B, "10k", "+3V3", "NTC_SENSE", (50, 200))
-comp(B, "TH", "Device:Thermistor_NTC", "10k NTC", {"1": "NTC_SENSE", "2": "GND"}, (50, 217),
+R(B, "10k", "+3V3", "NTC_SENSE", (365, 60))
+comp(B, "TH", "Device:Thermistor_NTC", "10k NTC", {"1": "NTC_SENSE", "2": "GND"}, (365, 77),
      0, "R0603", "NCP18XH103F03RB")
-port(B, "NTC_SENSE", (75, 208.28), "R", "output")
+port(B, "NTC_SENSE", (385, 68.58), "R", "output")
 
 # ======== 制御シート (MCU・CAN・エンコーダ)
 M = "ctrl"
 block("MCU")
-mcu = {"1": "+3V3", "2": "ENC1_Z", "3": "LED2", "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
-       "7": "NRST", "8": "VBUS_SENSE", "9": "ISENSE_A", "10": "UART_TX", "11": "UART_RX",
+mcu = {"1": "+3V3", "2": NC, "3": NC, "4": NC, "5": "OSC_IN", "6": "OSC_OUT",
+       "7": "NRST", "8": "VBUS_SENSE", "9": "ISENSE_A", "10": NC, "11": NC,
        "12": "ENC2_B", "13": "ENC2_Z", "14": "ENC2_A", "15": "ISENSE_B", "16": "ISENSE_C",
-       "17": NC, "18": NC, "19": "GND", "20": "+3V3", "21": "+3V3", "22": "LED1", "23": "GND",
-       "24": "+3V3", "25": "NTC_SENSE", "26": NC, "27": "PWM_AL", "28": "PWM_BL",
+       "17": "DRV_CAL", "18": "DRV_EN", "19": "GND", "20": "+3V3", "21": "+3V3", "22": "LED1", "23": "GND",
+       "24": "+3V3", "25": "NTC_SENSE", "26": "DRV_NFAULT", "27": "PWM_AL", "28": "PWM_BL",
        "29": "PWM_CL", "30": "PWM_AH", "31": "PWM_BH", "32": "PWM_CH", "33": "CAN_RX",
        "34": "CAN_TX", "35": "GND", "36": "+3V3", "37": "SWDIO", "38": "SWCLK", "39": NC,
-       "40": "ENC1_B", "41": "ENC1_A", "42": NC, "43": "ENC1_A", "44": "ENC1_B",
-       "45": "BOOT0", "46": NC, "47": "GND", "48": "+3V3"}
+       "40": "ENC1_B", "41": "ENC1_A", "42": "ENC1_Z", "43": "ENC1_A", "44": "ENC1_B",
+       "45": "BOOT0", "46": "LED2", "47": "GND", "48": "+3V3"}
 comp(M, "U", "MCU_ST_STM32G4:STM32G431CBTx", "STM32G431CBT6", mcu, (210, 140))
-for net in ("ISENSE_C", "NTC_SENSE", "PWM_AL", "PWM_BL", "PWM_CL", "BOOT0"):
-    port(M, net, (180, None), "L", "input" if net.startswith(("ISENSE", "NTC")) else
-         "passive" if net == "BOOT0" else "output")
-for net in ("VBUS_SENSE", "ISENSE_A", "ISENSE_B", "PWM_AH", "PWM_BH", "PWM_CH", "UART_TX",
-            "UART_RX"):
-    port(M, net, (242, None), "R",
-         "input" if net.startswith(("ISENSE", "VBUS")) or net == "UART_RX" else "output")
+for net in ("ISENSE_C", "NTC_SENSE", "PWM_AL", "PWM_BL", "PWM_CL", "DRV_CAL", "DRV_EN",
+            "DRV_NFAULT"):
+    port(M, net, (180, None), "L",
+         "input" if net.startswith(("ISENSE", "NTC", "DRV_N")) else "output")
+for net in ("VBUS_SENSE", "ISENSE_A", "ISENSE_B", "PWM_AH", "PWM_BH", "PWM_CH"):
+    port(M, net, (242, None), "R", "input" if net.startswith(("ISENSE", "VBUS")) else "output")
+R(M, "10k", "GND", "BOOT0", (183, "BOOT0"), 90)
 
 block("パスコン (VDD×3, VDDA, VREF+)")
 for i, (v, fp) in enumerate([("100nF", None), ("100nF", None), ("100nF", None),
-                             ("4.7uF 10V", "C0603"), ("100nF", None), ("1uF 25V", "C0603"),
+                             ("4.7uF 16V", "C0603"), ("100nF", None), ("1uF 50V", "C0603"),
                              ("100nF", None)]):
     C(M, v, "+3V3", "GND", (172 + 14 * i, 72), fp=fp or "C0402")
 
@@ -393,11 +472,11 @@ C(M, "15pF", "OSC_IN", "GND", (146, 108))
 C(M, "15pF", "OSC_OUT", "GND", (170, 108))
 
 block("LED")
-R(M, "1k", "LED2", "LED2_A", (182, "LED2"), 270, txt="below")
-comp(M, "D", "Device:LED", "LED", {"2": "LED2_A", "1": "GND"}, (170, "LED2"), 0, "LED0603",
-     txt="below")
-R(M, "1k", "LED1", "LED1_A", (168, "LED1"), 270)
-comp(M, "D", "Device:LED", "LED", {"2": "LED1_A", "1": "GND"}, (155, "LED1"), 0, "LED0603")
+R(M, "1k", "LED2", "LED2_A", (130, "LED2"), 270)
+comp(M, "D", "Device:LED", "LED", {"2": "LED2_A", "1": "GND"}, (118, "LED2"), 0, "LED0603",
+     txt="above")
+R(M, "1k", "LED1", "LED1_A", (157, "LED1"), 270, txt="below")
+comp(M, "D", "Device:LED", "LED", {"2": "LED1_A", "1": "GND"}, (144, "LED1"), 0, "LED0603", txt="below")
 
 block("エンコーダ1 (ABZ または SSI: A=DO, B=CLK, Z=CSN)")
 # A/B は TIM4(PB6/PB7) と SPI3(PB4 MISO / PB3 SCK) の両方へ配線し、ファームでどちらかを使う
@@ -407,9 +486,9 @@ for i, s_ in enumerate(e1):
 comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
      {"5": "+3V3", "2": "GND", "1": "ENC1_A_C", "3": "ENC1_B_C", "4": "ENC1_Z_C", "6": NC},
      (95, 112), 90, None, "TPUSBLC6-4SC6", txt="right")
-comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ1(未選定)",
+comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ1",
      {"1": "+3V3", "2": "GND", "3": "ENC1_A_C", "4": "ENC1_B_C", "5": "ENC1_Z_C"},
-     (40, 140), 180, txt="left")
+     (40, 140), 180, txt="left", fp="Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical")
 
 block("エンコーダ2 (ABZ)")
 e2 = ["ENC2_B", "ENC2_Z", "ENC2_A"]
@@ -418,40 +497,99 @@ for i, s in enumerate(e2):
 comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
      {"5": "+3V3", "2": "GND", "1": "ENC2_B_C", "3": "ENC2_Z_C", "4": "ENC2_A_C", "6": NC},
      (335, 97), 90, None, "TPUSBLC6-4SC6", txt="right")
-comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ2(未選定)",
+comp(M, "J", "Connector_Generic:Conn_01x05", "エンコーダ2",
      {"1": "+3V3", "2": "GND", "3": "ENC2_A_C", "4": "ENC2_B_C", "5": "ENC2_Z_C"},
-     (380, 119.38), 0, txt="right")
+     (380, 119.38), 0, txt="right",
+     fp="Connector_JST:JST_XH_B5B-XH-A_1x05_P2.50mm_Vertical")
 
-block("SWD")
-comp(M, "J", "Connector_Generic:Conn_01x05", "SWD(未選定)",
-     {"1": "SWDIO", "2": "SWCLK", "3": "NRST", "4": "GND", "5": "+3V3"}, (252, 162), 0,
-     txt="right")
+block("SWD (ST-Link V2互換品、5Vで給電も受ける)")
+comp(M, "J", "Connector_Generic:Conn_01x05", "SWD",
+     {"1": "SWD_5V", "2": "SWDIO", "3": "SWCLK", "4": "NRST", "5": "GND"}, (252, 162), 0,
+     "Connector_JST:JST_PH_B5B-PH-K_1x05_P2.00mm_Vertical", "B5B-PH-K-S", txt="right")
+port(M, "SWD_5V", (275, None), "R", "output")
 C(M, "100nF", "NRST", "GND", (240, 182))
 comp(M, "SW", "Switch:SW_Push", "RESET", {"1": "NRST", "2": "GND"}, (230, 182), 270,
-     "Button_Switch_SMD:SW_SPST_TL3342", "TL3342")
-port(M, "NRST", (228, 195.58), "L")
+     "Button_Switch_SMD:SW_Push_1P1T_XKB_TS-1187A", "TS-1187A-B-A-B")
 
-block("CANトランシーバ (STBはGND固定=常時ノーマルモード)")
-comp(M, "U", "pancake:TCAN1044V", "TCAN1044VDRQ1",
-     {"3": "+5V", "5": "+3V3", "1": "CAN_TX", "4": "CAN_RX", "8": "GND", "2": "GND",
-      "7": "CANH", "6": "CANL"}, (305, 195), fp="SOIC8")
-C(M, "100nF", "+5V", "GND", (285, 217))
-C(M, "100nF", "+3V3", "GND", (297, 217))
+block("絶縁CANトランシーバ (右側はGND_ISOの島)")
+comp(M, "U", "pancake:CA-IS2062A", "CA-IS2062A",
+     {"1": "CAN_RX", "4": "CAN_TX", "5": "GND", "6": "+5V", "7": "+3V3", "8": "GND",
+      "15": "CANH", "14": "CANL", "12": "GND_ISO", "11": "VISO", "10": "VISO",
+      "9": "GND_ISO"}, (266, 227), fp="pancake:CA-IS2062A_LGA-16_4.65x5.2mm_P0.65mm")
+# 同じ面で電源ピンから2mm以内に置く
+C(M, "10uF 25V", "+5V", "GND", (210, 264), fp="C0805")
+C(M, "100nF", "+5V", "GND", (226, 264))
+C(M, "1uF 50V", "+3V3", "GND", (240, 264), fp="C0603")
+C(M, "10uF 25V", "VISO", "GND_ISO", (255, 264), fp="C0805")
+C(M, "100nF", "VISO", "GND_ISO", (269, 264))
+C(M, "1uF 50V", "VISO", "GND_ISO", (281, 264), fp="C0603")
+flag(M, "GND_ISO", (222, 224))
 
 block("CAN保護・スプリット終端・RJ45×2 (数珠つなぎ)")
 comp(M, "D", "Power_Protection:NUP2105L", "ESDCAN24-2BLY",
-     {"1": "CANH", "2": "CANL", "3": "GND"}, (333, 202), 0, "SOT23", txt="right")
+     {"1": "CANH", "2": "CANL", "3": "GND_ISO"}, (328, 200), 0, "SOT23", txt="left")
 comp(M, "JP", "Jumper:SolderJumper_2_Open", "終端ON", {"1": "CANH", "2": "CANH_T"},
-     (355, 202), 270, in_bom=False)
-R(M, "60.4", "CANH_T", "CAN_SPLIT", (355, 215))
-R(M, "60.4", "CAN_SPLIT", "CANL", (355, 232))
-C(M, "4.7nF", "CAN_SPLIT", "GND", (367, 223.5), 90)
+     (346, 202), 270,
+     "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm", in_bom=False)
+comp(M, "JP", "Jumper:SolderJumper_2_Open", "終端ON", {"1": "CANL_T", "2": "CANL"},
+     (346, 245), 270,
+     "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm", in_bom=False)
+# 60Ω = 120Ω×2並列 (60.4ΩはJLCのBasicに無い)
+for x in (346, 356):
+    R(M, "120", "CANH_T", "CAN_SPLIT", (x, 215))
+    R(M, "120", "CAN_SPLIT", "CANL_T", (x, 232))
+C(M, "4.7nF", "CAN_SPLIT", "GND_ISO", (338, 223.5), 270)
+# ピン配置は桔梗の雛形に合わせる: 1-2 CAN1、3-6 CAN2、4-5 12V(素通し)、7-8 GND。
+# 7-8 GNDと素通しの12Vは絶縁側だけで完結させる (基板のGNDとつながない)。
+# CAN1が既定 (JPの1-2が銅箔でつながっている)。CAN2を使うときは切って2-3をはんだ付けする。
+for k, w in enumerate("HL"):
+    comp(M, "JP", "Jumper:SolderJumper_3_Bridged12", "CAN1/CAN2",
+         {"1": "CAN1" + w, "2": "CAN" + w, "3": "CAN2" + w}, (371, 211 + 22 * k), 0,
+         "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm", in_bom=False, txt="above")
 for i in range(2):
-    comp(M, "J", "Connector:RJ45", "RJ45", {"1": "CANH", "2": "CANL", "3": "GND", "7": "GND",
-                                            "4": NC, "5": NC, "6": NC, "8": NC},
-         (397, 195 + 42 * i), 180, None, "R-RJ45R08P-A004", txt="above")
+    comp(M, "J", "Connector:RJ45", "RJ45", {"1": "CAN1H", "2": "CAN1L", "3": "CAN2H",
+                                            "6": "CAN2L", "4": "CAN_12V", "5": "CAN_12V",
+                                            "7": "GND_ISO", "8": "GND_ISO"},
+         (397, 195 + 42 * i), 180, "pancake:RJ45_R-RJ45R08P-A004", "R-RJ45R08P-A004",
+         txt="above")
 
-SHEETS = [("power", "電源・USB"), ("bridge", "パワー段"), ("ctrl", "制御 (MCU・CAN・エンコーダ)")]
+# ======== 測定用・調整用の追加 (既存の部品番号をずらさないよう最後に置く)
+
+
+def nettie(page, a, b, at, rot=0):
+    comp(page, "NT", "Device:NetTie_2", "NetTie", {"1": a, "2": b}, at, rot,
+         "NetTie:NetTie-2_SMD_Pad0.5mm", in_bom=False, txt="above")
+
+
+def tp(page, name, net, at):
+    comp(page, "TP", "Connector:TestPoint", name, {"1": net}, at, 0,
+         "TestPoint:TestPoint_Pad_D1.0mm", in_bom=False, txt="above")
+
+
+for k, ph in enumerate("ABC"):
+    block("%s相 ハーフブリッジ" % ph)
+    ox, oy = 225, 44 + 86 * k
+    # 検出線はシャントのパッドから引く (ネットタイはシャントの直近に置く)
+    nettie(B, "SP_" + ph, "SHUNT_" + ph, (ox + 18, oy + 27))
+    nettie(B, "SN_" + ph, "GND~" + ph, (ox + 18, oy + 37))
+    # 上FETドレイン〜下FETソースの未実装パッド (シャントを通らない経路)
+    comp(B, "C", "Device:C", "1uF 100V", {"1": "VBUS~" + ph, "2": "SHUNT_" + ph},
+         (ox + 75, oy + 24), 0, "C1206", in_bom=False, dnp=True)
+    tp(B, "GH" + ph, "GATE_%sH" % ph, (ox + 18, oy - 14))
+    tp(B, "GL" + ph, "GATE_%sL" % ph, (ox + 18, oy + 10))
+    tp(B, "SH" + ph, "PHASE_" + ph, (ox + 97, oy - 4))
+block("ゲートドライバ・5V降圧 (DRV8323RH)")
+nettie(B, "VDRAIN", "VBUS", (165, 66))
+for k, ph in enumerate("ABC"):
+    tp(B, "SO" + ph, "SO" + ph, (88, 92 + 7.62 * k))
+tp(B, "VCP", "VCP", (198, 46))
+tp(B, "DVDD", "DVDD", (92, 150))
+tp(B, "nFAULT", "DRV_NFAULT", (30, 150))
+block("テストポイント (電源)")
+for k, net in enumerate(("VBUS", "+5V", "+3V3", "GND", "GND")):
+    tp(P, net, net, (262 + 16 * k, 125))
+
+SHEETS = [("power", "電源"), ("bridge", "パワー段"), ("ctrl", "制御 (MCU・CAN・エンコーダ)")]
 PAPER = {"power": ("A3", 420, 297), "bridge": ("A3", 420, 297), "ctrl": ("A3", 420, 297)}
 
 # ---------------------------------------------------------------- geometry helpers
@@ -701,7 +839,7 @@ class Sheet:
         """Power symbol whose connection point is (x, y), body pointing (dx, dy)."""
         plib = POWER_NETS[net]
         self.libs.setdefault(plib, libsym(plib))
-        if net == "GND":
+        if net.startswith("GND"):
             rot = {(0, 1): 0, (0, -1): 180, (1, 0): 90, (-1, 0): 270}[(dx, dy)]
         else:
             rot = {(0, -1): 0, (0, 1): 180, (1, 0): 270, (-1, 0): 90}[(dx, dy)]
@@ -710,6 +848,8 @@ class Sheet:
         vx, vy = x + dx * 5.5, y + dy * 4.5
         if dy:
             vx = x
+        elif net == "GND_ISO":      # 横向きの長い名前は水平に書き、隣の部品に重ねない
+            vx = x + dx * (4 + text_w(net) / 2)
         self.items.append(
             [Sym("symbol"), [Sym("lib_id"), plib], [Sym("at"), x, y, rot],
              [Sym("unit"), 1], [Sym("exclude_from_sim"), Sym("no")],
@@ -723,6 +863,8 @@ class Sheet:
              [Sym("instances"), [Sym("project"), PROJECT,
                                  [Sym("path"), self.path, [Sym("reference"), pref],
                                   [Sym("unit"), 1]]]]])
+        if net == "GND_ISO" and dx:
+            self.items[-1][10][3][3] = 90
         # keep-out: symbol body + value text
         ex, ey = x + dx * 4, y + dy * 4
         self.rt.block_rect(min(x, ex) - 1.3, min(y, ey) - 1.3, max(x, ex) + 1.3, max(y, ey) + 1.3)
@@ -812,7 +954,8 @@ class Sheet:
         s += [[Sym("unit"), 1],
              [Sym("exclude_from_sim"), Sym("no")],
              [Sym("in_bom"), Sym("yes" if c["in_bom"] else "no")],
-             [Sym("on_board"), Sym("yes")], [Sym("dnp"), Sym("no")], [Sym("uuid"), uid()],
+             [Sym("on_board"), Sym("yes")], [Sym("dnp"), Sym("yes" if c["dnp"] else "no")],
+             [Sym("uuid"), uid()],
              tp("Reference", refv, rx, ry), tp("Value", valv, vx, vy)]
         fpv = c["fp"]
         if fpv is None:
@@ -821,6 +964,10 @@ class Sheet:
         s.append(_prop("Datasheet", "~", X, Y, True))
         if c["mpn"]:
             s.append(_prop("MPN", c["mpn"], X, Y, True))
+        lcsc = LCSC.get((c["value"], (c["fp"] or "").split(":")[-1].removesuffix("Metric")),
+                        LCSC.get((c["mpn"], None)))
+        if lcsc and c["in_bom"]:
+            s.append(_prop("LCSC", lcsc, X, Y, True))
         for p in pins:
             s.append([Sym("pin"), p[0], [Sym("uuid"), uid()]])
         s.append([Sym("instances"), [Sym("project"), PROJECT,
@@ -829,7 +976,7 @@ class Sheet:
         self.items.append(s)
 
         # pins: signal -> router terminal, power -> stub + symbol, NC -> marker
-        ends, done = [], set()
+        ends, sigs, done = [], [], set()
         for p in pins:
             px, py = X + p[3], Y + p[4]
             key = cell(px, py)
@@ -852,15 +999,24 @@ class Sheet:
             else:
                 self.terms.setdefault(net, []).append((key, d))
                 self.rt.add_pin(net, px, py, d)
-        self._power_ends(ends, blk)
+                sigs.append((px + d[0] * 2.54, py + d[1] * 2.54, d))
+        self._power_ends(ends, sigs, blk)
 
-    def _power_ends(self, ends, blk):
+    def _power_ends(self, ends, sigs, blk):
         handled = set()
         for i, (net, ex, ey, dx, dy) in enumerate(ends):
             if i in handled:
                 continue
             grp = [j for j, e in enumerate(ends) if e[0] == net and e[3] == dx and e[4] == dy
                    and (abs(e[2] - ey) < 0.01 if dy else abs(e[1] - ex) < 0.01)]
+            # 間に信号ピンがある電源ピン同士は縦棒でつながない (信号の引き出しをふさぐため)
+            def cut_by_signal(j):
+                k = 2 if dx else 1
+                lo, hi = sorted((ends[i][k], ends[j][k]))
+                o = 1 if dx else 2
+                return any(q[2] == (dx, dy) and abs(q[o - 1] - ends[i][o]) < 0.01
+                           and lo < q[k - 1] < hi for q in sigs)
+            grp = [j for j in grp if j not in handled and not cut_by_signal(j)]
             if len(grp) > 1:
                 pts = [ends[j] for j in grp]
                 if dy:
@@ -882,7 +1038,7 @@ class Sheet:
                         self.items.append(wire_item(ex, lo, ex, hi))
                         self.rt.block_rect(ex - 0.6, lo - 0.6, ex + 0.6, hi + 0.6)
                         self.items.extend(junction_item(ex, e[2]) for e in pts if lo < e[2] < hi)
-                        self.power(net, ex, hi if net == "GND" else lo, dx, dy, blk)
+                        self.power(net, ex, hi if net.startswith("GND") else lo, dx, dy, blk)
                     continue
             handled.add(i)
             self.power(net, ex, ey, dx, dy, blk)
@@ -892,7 +1048,7 @@ class Sheet:
         self.libs.setdefault("power:PWR_FLAG", libsym("power:PWR_FLAG"))
         _counts["#FLG"] = _counts.get("#FLG", 0) + 1
         ref = "#FLG%02d" % _counts["#FLG"]
-        frot = 0 if net == "GND" else 180
+        frot = 0 if net.startswith("GND") else 180
         self.items.append(
             [Sym("symbol"), [Sym("lib_id"), "power:PWR_FLAG"], [Sym("at"), x, y, frot],
              [Sym("unit"), 1], [Sym("exclude_from_sim"), Sym("no")], [Sym("in_bom"), Sym("no")],
@@ -906,7 +1062,15 @@ class Sheet:
                                   [Sym("unit"), 1]]]]])
         self.items[-1][10][4].append([Sym("justify"), Sym("left")])
         self.rt.block_rect(x - 2, y - 6, x + 12, y + 6)
-        self.power(net, x, y, 0, 1 if net == "GND" else -1, blk)
+        self.power(net, x, y, 0, 1 if net.startswith("GND") else -1, blk)
+
+    def add_tie(self, key, x, y, blk):
+        net = key.split("~")[0]
+        x, y = snap(x), snap(y)
+        d = (0, -1) if net == "GND" else (0, 1)     # wire leaves toward the circuit
+        self.power(net, x, y, 0, -d[1], blk)
+        self.terms.setdefault(key, []).append((cell(x, y), d))
+        self.rt.add_pin(key, x, y, d)
 
     def add_port(self, net, x, y, side, shape):
         if y is None or isinstance(y, str):     # align with the first pin of that net
@@ -968,6 +1132,8 @@ def build_sheet(page, root_uuid, sheet_uuid):
         sh.add_comp(c)
     for net, x, y, blk in FLAGS.get(page, []):
         sh.add_flag(net, x, y, blk)
+    for key, x, y, blk in TIES.get(page, []):
+        sh.add_tie(key, x, y, blk)
     for net, x, y, side, shape in PORTS.get(page, []):
         sh.add_port(net, x, y, side, shape)
     failed = sh.route_all()
@@ -1072,9 +1238,16 @@ def main():
     with open(os.path.join(OUT, "sym-lib-table"), "w", encoding="utf-8", newline="\n") as f:
         f.write('(sym_lib_table\n  (version 7)\n  (lib (name "pancake")(type "KiCad")'
                 '(uri "${KIPRJMOD}/pancake.kicad_sym")(options "")(descr "固いパンケーキ用"))\n)\n')
+    with open(os.path.join(OUT, "fp-lib-table"), "w", encoding="utf-8", newline="\n") as f:
+        f.write('(fp_lib_table\n  (version 7)\n  (lib (name "pancake")(type "KiCad")'
+                '(uri "${KIPRJMOD}/pancake.pretty")(options "")(descr "固いパンケーキ用"))\n)\n')
     print("written to", OUT)
     return 1 if bad else 0
 
 
 if __name__ == "__main__":
+    # 配線結果が set の順序 (文字列ハッシュ) に依存するので、毎回同じ結果になるよう固定する
+    if os.environ.get("PYTHONHASHSEED") != "0":
+        os.environ["PYTHONHASHSEED"] = "0"
+        sys.exit(subprocess.call([sys.executable] + sys.argv))
     sys.exit(main())

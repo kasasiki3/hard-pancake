@@ -7,3 +7,5 @@ kicad/fp-info-cache
 kicad/~*.lck
 tools/__pycache__/
 kicad/.history/
+tools/build/
+sim/run

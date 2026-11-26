@@ -1,0 +1,7 @@
+(version 1)
+# JLCの4層（最小0.1mm前後）に余裕を見た値。0.5mmピッチのピンから引き出すため0.15mm
+(rule "base"
+	(constraint clearance (min 0.15mm)))
+# 信号端子のサーマルは、配線で1本に減ってもよい（ビアでもつながっている）
+(rule "spokes"
+	(constraint min_resolved_spokes 1))
