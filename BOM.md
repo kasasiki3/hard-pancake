@@ -15,6 +15,7 @@ JLCでは基本部品（Basic・Preferred）と、手はんだできないExtend
 | TX32258M4FBDD2T（8MHz水晶） | 1 |
 | TS-1187A-B-A-B（リセットボタン） | 1 |
 | BAT54C | 1 |
+| SRV05-4-P-T7（エンコーダのESD、C85364） | 2 |
 | C 10µF 50V X5R 1206 | 1 |
 | C 47nF 50V 0603 | 1 |
 | C 100nF 100V 0805 | 4 |
@@ -52,7 +53,6 @@ JLCでは基本部品（Basic・Preferred）と、手はんだできないExtend
 | SS16（SMA）                                          | 1   |
 | ESDCAN24-2BLY                                      | 1   |
 | RT9013-33GB                                        | 1   |
-| TPUSBLC6-4SC6                                      | 2   |
 | SN74LVC1G17DBVR（エンコーダ2用バッファ、TI純正、C7836）            | 3   |
 | NCP18XH103F03RB（NTC 10kΩ）                          | 1   |
 |                                                    |     |

@@ -284,7 +284,7 @@ LCSC = {
     ("100uF 63V", None): "C46528099", ("SMBJ30A", None): "C113998", ("BAT54C", None): "C37704",
     ("XT60PW-M", None): "C98732", ("RT9013-33GB", None): "C47773", ("ESDCAN24-2BLY", None): "C246766",
     ("エンコーダ1", None): "C225449", ("エンコーダ2", None): "C225449", ("SWD", None): "C157993",
-    ("RJ45", None): "C385834", ("STM32G431CBT6", None): "C529355", ("USBLC6-4SC6", None): "C558419",
+    ("RJ45", None): "C385834", ("STM32G431CBT6", None): "C529355", ("SRV05-4", None): "C85364",
     ("CA-IS2062A", None): "C22438481", ("8MHz", None): "C5308003", ("2.2uF 100V", None): "C55151",
     ("SS16", None): "C2481", ("22uH", None): "C83454", ("NTMFS5C628NLT1G", None): "C145537",
     ("0.5m", None): "C710260", ("10k NTC", None): "C13564", ("DRV8323RHRGZR", None): "C543035",
@@ -492,9 +492,9 @@ block("エンコーダ1 (ABZ または SSI: A=DO, B=CLK, Z=CSN)")
 e1 = ["ENC1_Z", "ENC1_B", "ENC1_A"]
 for i, s_ in enumerate(e1):
     R(M, "100", s_, s_ + "_C", (135, 127 + 7.62 * i), 270)
-comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
+comp(M, "U", "Power_Protection:USBLC6-4SC6", "SRV05-4",
      {"5": "+5V", "2": "GND", "1": "ENC1_A_C", "3": "ENC1_B_C", "4": "ENC1_Z_C", "6": NC},
-     (95, 112), 90, None, "TPUSBLC6-4SC6", txt="right")
+     (95, 112), 90, None, "SRV05-4-P-T7", txt="right")
 comp(M, "J", "Connector_Generic:Conn_01x06", "エンコーダ1",
      {"1": "ENC1_VCC", "2": "GND", "3": "GND", "4": "ENC1_A_C", "5": "ENC1_B_C", "6": "ENC1_Z_C"},
      (40, 140), 180, txt="left", fp="Connector_JST:JST_XA_B06B-XASK-1_1x06_P2.50mm_Vertical")
@@ -503,9 +503,9 @@ block("エンコーダ2 (ABZ、5V入力はSN74LVC1G17で3.3Vへ変換)")
 e2 = ["ENC2_B", "ENC2_Z", "ENC2_A"]
 for i, s in enumerate(e2):
     R(M, "100", s + "_BUF", s + "_C", (312, 114.3 + 5.08 * i), 90)
-comp(M, "U", "Power_Protection:USBLC6-4SC6", "USBLC6-4SC6",
+comp(M, "U", "Power_Protection:USBLC6-4SC6", "SRV05-4",
      {"5": "+5V", "2": "GND", "1": "ENC2_B_C", "3": "ENC2_Z_C", "4": "ENC2_A_C", "6": NC},
-     (345, 97), 90, None, "TPUSBLC6-4SC6", txt="right")
+     (345, 97), 90, None, "SRV05-4-P-T7", txt="right")
 comp(M, "J", "Connector_Generic:Conn_01x06", "エンコーダ2",
      {"1": "ENC2_VCC", "2": "GND", "3": "GND", "4": "ENC2_A_C", "5": "ENC2_B_C", "6": "ENC2_Z_C"},
      (388, 119.38), 0, txt="right",
